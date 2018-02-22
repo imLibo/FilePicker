@@ -24,10 +24,12 @@ import com.imlibo.filepicker.SelectFileByBrowserEvent;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
+import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.model.BreadModel;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileEvent;
 import com.imlibo.filepicker.presenter.SelectFileByBrowserPresenter;
+import com.imlibo.filepicker.util.Const;
 import com.imlibo.filepicker.util.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +47,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     private static final String TAG = "SelectFileByBrowser";
 
     /*只展示指定文件名后缀的文件*/
-    private String[] mTypes;
+    private String[] mFileTypes;
     /*文件列表排序类型，默认按文件名升序排列*/
     private int mSortType = FileUtils.BY_NAME_ASC;
     /*当前目录，默认是SD卡根目录*/
@@ -54,6 +56,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     private List<String> mSdCardList;
     /*是否是多选，默认否*/
     private boolean mIsMultiSelect = true;
+    /*选中返回监听器*/
+    private static OnSelectFileListener mOnSelectFileListener;
 
     private SelectFileByBrowserPresenter mPresenter;
     private FileListAdapter mAdapter;
@@ -77,9 +81,9 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file);
         EventBus.getDefault().register(this);
-        mTypes = getIntent().getStringArrayExtra("TYPES");
-        mSortType = getIntent().getIntExtra("SORT_TYPE", FileUtils.BY_NAME_ASC);
-        mIsMultiSelect = getIntent().getBooleanExtra("IS_MULTI_SELECT", true);
+        mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
+        mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
+        mIsMultiSelect = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_MULTI_SELECT, true);
         mPresenter = new SelectFileByBrowserPresenter(this);
 
         if (!checkPermissionAndCheckSDCardEnabled()) {
@@ -91,6 +95,10 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
         }
         initUi();
         initData();
+    }
+
+    public static void setOnSelectFileListener(OnSelectFileListener OnSelectFileListener) {
+        mOnSelectFileListener = OnSelectFileListener;
     }
 
     @Override
@@ -135,7 +143,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     }
 
     private void initData() {
-        mPresenter.findFileList(mSelectedFileList,mCurFolder, mTypes, mSortType);
+        mPresenter.findFileList(mSelectedFileList,mCurFolder, mFileTypes, mSortType);
     }
 
     /**
@@ -207,7 +215,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             public void onItemClick(BaseQuickAdapter adapterIn, View view, int position) {
                 mSelectSdCardWindow.dismiss();
                 mHasChangeSdCard = true;
-                mPresenter.findFileList(mSelectedFileList, FileUtils.getChangeSdCard(adapter.getData().get(position), mSdCardList), mTypes, mSortType);
+                mPresenter.findFileList(mSelectedFileList, FileUtils.getChangeSdCard(adapter.getData().get(position), mSdCardList), mFileTypes, mSortType);
             }
         });
         mSelectSdCardWindow.showAsDropDown(mImbSelectSdCard);
@@ -231,7 +239,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
      */
     @Subscribe
     public void findChildCounts(FileEvent event) {
-        mPresenter.findChildFileAndFolderCount(event.getPosition(), mAdapter.getData().get(event.getPosition()).getAbsolutePath(), mTypes);
+        mPresenter.findChildFileAndFolderCount(event.getPosition(), mAdapter.getData().get(event.getPosition()).getAbsolutePath(), mFileTypes);
     }
 
     @Override
@@ -249,7 +257,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
                 //点击文件夹
                 //保存当前的垂直滚动位置
                 mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(mRecyclerView.computeVerticalScrollOffset());
-                mPresenter.findFileList(mSelectedFileList, mCurFolder + item.getName() + File.separator, mTypes, mSortType);
+                mPresenter.findFileList(mSelectedFileList, mCurFolder + item.getName() + File.separator, mFileTypes, mSortType);
             } else {
                 //选中某文件后，判断是否多选
                 if(!mIsMultiSelect){
@@ -292,7 +300,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             super.onBackPressed();
             return;
         }
-        mPresenter.findFileList(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, mTypes, mSortType);
+        mPresenter.findFileList(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, mFileTypes, mSortType);
     }
 
     @Override
@@ -303,7 +311,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             if (mCurFolder.equals(queryPath)) {
                 return;
             }
-            mPresenter.findFileList(mSelectedFileList, queryPath, mTypes, mSortType);
+            mPresenter.findFileList(mSelectedFileList, queryPath, mFileTypes, mSortType);
         }
     }
 
@@ -330,8 +338,12 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             if(mSelectedFileList.isEmpty()){
                return true;
             }
-            //
-
+            //不为空
+            if(mOnSelectFileListener!=null){
+                mOnSelectFileListener.onSelectFile(mSelectedFileList);
+                super.onBackPressed();
+                return true;
+            }
         } else if (i == R.id.browser_sort) {
             //排序
             new AlertDialog
@@ -359,7 +371,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
                                     mSortType = FileUtils.BY_EXTENSION_DESC;
                                     break;
                             }
-                            mPresenter.findFileList(mSelectedFileList, mCurFolder, mTypes, mSortType);
+                            mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
                         }
                     })
                     .setPositiveButton("升序", new DialogInterface.OnClickListener() {
@@ -379,7 +391,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
                                     mSortType = FileUtils.BY_EXTENSION_ASC;
                                     break;
                             }
-                            mPresenter.findFileList(mSelectedFileList, mCurFolder, mTypes, mSortType);
+                            mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
                         }
                     })
                     .setTitle("请选择")
