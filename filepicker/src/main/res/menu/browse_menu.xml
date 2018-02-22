@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/browser_select_count"
+        android:orderInCategory="100"
+        android:title="选中(0)"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/browser_sort"
+        android:orderInCategory="100"
+        android:title="排序"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_sort_white_24dp"
+        />
+
+</menu>

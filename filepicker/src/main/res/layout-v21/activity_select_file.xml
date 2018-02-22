@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
+    tools:context=".activity.SelectFileByBrowserActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:background="?attr/colorPrimary">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/imb_select_sdcard"
+                android:layout_gravity="center_vertical"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:rotation="90"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_chevron_right_white_24dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/breadcrumbs_view"
+                android:layout_width="match_parent"
+                android:paddingRight="10dp"
+                android:layout_height="?attr/actionBarSize"
+                />
+        </LinearLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_file_list"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+
+</android.support.design.widget.CoordinatorLayout>
