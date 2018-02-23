@@ -87,6 +87,10 @@ public class FileListAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
             case "mp3":
                 imageView.setImageResource(R.mipmap.mp3);
                 break;
+            case "mp4":
+            case "f4v":
+                imageView.setImageResource(R.mipmap.movie);
+                break;
             case "pdf":
                 imageView.setImageResource(R.mipmap.pdf);
                 break;

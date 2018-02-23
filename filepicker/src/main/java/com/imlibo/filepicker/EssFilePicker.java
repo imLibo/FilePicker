@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.imlibo.filepicker.activity.SelectFileByBrowserActivity;
+import com.imlibo.filepicker.activity.SelectFileByScanActivity;
 import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.util.Const;
 
@@ -16,11 +17,19 @@ import com.imlibo.filepicker.util.Const;
 public class EssFilePicker {
 
     EssFilePicker(Builder builder) {
-        Intent intent = new Intent(builder.mContext, SelectFileByBrowserActivity.class);
+        Intent intent = new Intent();
         intent.putExtra(Const.EXTRA_KEY_FILE_TYPE, builder.mFileTypes);
         intent.putExtra(Const.EXTRA_KEY_SORT_TYPE, builder.mSortType);
         intent.putExtra(Const.EXTRA_KEY_IS_MULTI_SELECT, builder.isMultiSelect);
-        SelectFileByBrowserActivity.setOnSelectFileListener(builder.onSelectFileListener);
+        intent.putExtra(Const.EXTRA_KEY_MAX_COUNT, builder.maxCount);
+        if(builder.isByBrowser){
+            intent.setClass(builder.mContext,SelectFileByBrowserActivity.class);
+            SelectFileByBrowserActivity.setOnSelectFileListener(builder.onSelectFileListener);
+        }
+        if(builder.isByScan){
+            intent.setClass(builder.mContext, SelectFileByScanActivity.class);
+            SelectFileByScanActivity.setOnSelectFileListener(builder.onSelectFileListener);
+        }
         builder.mContext.startActivity(intent);
     }
 
@@ -29,10 +38,18 @@ public class EssFilePicker {
         private String mSortType;
         private boolean isMultiSelect;
         private OnSelectFileListener onSelectFileListener;
+        private boolean isByBrowser = false;
+        private boolean isByScan = false;
+        private int maxCount = 10;
         private Context mContext;
 
         public Builder(Context mContext) {
             this.mContext = mContext;
+        }
+
+        public Builder setMaxCount(int maxCount) {
+            this.maxCount = maxCount;
+            return this;
         }
 
         public Builder setFileTypes(String...fileTypes){
@@ -52,6 +69,18 @@ public class EssFilePicker {
 
         public Builder setOnSelectListener(OnSelectFileListener onSelectListener){
             this.onSelectFileListener = onSelectListener;
+            return this;
+        }
+
+        public Builder isByBrowser(){
+            this.isByBrowser = true;
+            this.isByScan = false;
+            return this;
+        }
+
+        public Builder isByScan(){
+            this.isByScan = true;
+            this.isByBrowser = false;
             return this;
         }
 

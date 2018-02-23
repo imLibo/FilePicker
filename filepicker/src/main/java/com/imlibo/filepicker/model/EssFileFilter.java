@@ -1,5 +1,10 @@
 package com.imlibo.filepicker.model;
 
+import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
+
+import com.imlibo.filepicker.util.FileUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -19,8 +24,9 @@ public class EssFileFilter implements FileFilter {
             return true;
         }
         if (mTypes != null && mTypes.length > 0) {
-            for (int i = 0; i < mTypes.length; i++) {
-                if (file.getName().endsWith(mTypes[i].toLowerCase()) || file.getName().endsWith(mTypes[i].toUpperCase())) {
+            for (String mType : mTypes) {
+                if (file.getName().endsWith(mType.toLowerCase()) || file.getName().endsWith(mType.toUpperCase())) {
+//                if (FileUtils.getMimeType(file.getAbsolutePath()).equalsIgnoreCase(MimeTypeMap.getSingleton().getMimeTypeFromExtension(mType))) {
                     return true;
                 }
             }

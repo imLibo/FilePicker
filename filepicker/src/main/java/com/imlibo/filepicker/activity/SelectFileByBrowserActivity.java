@@ -50,12 +50,15 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     private String[] mFileTypes;
     /*文件列表排序类型，默认按文件名升序排列*/
     private int mSortType = FileUtils.BY_NAME_ASC;
+    /*是否是多选，默认否*/
+    private boolean mIsMultiSelect = true;
+    /*最多可选择个数*/
+    private int mMaxCount = 10;
+
     /*当前目录，默认是SD卡根目录*/
     private String mCurFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
     /*所有可访问存储设备列表*/
     private List<String> mSdCardList;
-    /*是否是多选，默认否*/
-    private boolean mIsMultiSelect = true;
     /*选中返回监听器*/
     private static OnSelectFileListener mOnSelectFileListener;
 
@@ -84,6 +87,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
         mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
         mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
         mIsMultiSelect = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_MULTI_SELECT, true);
+        mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
         mPresenter = new SelectFileByBrowserPresenter(this);
 
         if (!checkPermissionAndCheckSDCardEnabled()) {
@@ -105,6 +109,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browse_menu, menu);
         mCountMenuItem = menu.findItem(R.id.browser_select_count);
+        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count),String.valueOf(mSelectedFileList.size()),String.valueOf(mMaxCount)));
         return true;
     }
 
@@ -140,6 +145,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
         mBreadRecyclerView.setAdapter(mBreadAdapter);
         mBreadAdapter.bindToRecyclerView(mBreadRecyclerView);
         mBreadAdapter.setOnItemChildClickListener(this);
+
     }
 
     private void initData() {
@@ -261,10 +267,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             } else {
                 //选中某文件后，判断是否多选
                 if(!mIsMultiSelect){
-                    Intent intent = new Intent();
-                    intent.putExtra("selectFile", item);
-                    setResult(0, intent);
-                    this.finish();
+                    mOnSelectFileListener.onSelectFile(mSelectedFileList);
+                    super.onBackPressed();
                     return;
                 }
                 if(mAdapter.getData().get(position).isChecked()){
@@ -273,11 +277,15 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
                         mSelectedFileList.remove(index);
                     }
                 }else {
+                    if(mSelectedFileList.size() >= mMaxCount){
+                        //超出最大可选择数量后
+                        return;
+                    }
                     mSelectedFileList.add(item);
                 }
                 mAdapter.getData().get(position).setChecked(!mAdapter.getData().get(position).isChecked());
                 mAdapter.notifyItemChanged(position,"");
-                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count),String.valueOf(mSelectedFileList.size())));
+                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count),String.valueOf(mSelectedFileList.size()),String.valueOf(mMaxCount)));
             }
         }
     }

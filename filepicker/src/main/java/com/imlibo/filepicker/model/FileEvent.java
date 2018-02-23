@@ -1,7 +1,7 @@
 package com.imlibo.filepicker.model;
 
 /**
- *
+ * FileEvent
  * Created by 李波 on 2018/2/7.
  */
 

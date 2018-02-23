@@ -2,6 +2,8 @@ package com.imlibo.filepicker.model;
 
 import android.os.Parcel;
 
+import com.imlibo.filepicker.util.FileUtils;
+
 import org.w3c.dom.ProcessingInstruction;
 
 import java.io.File;
@@ -17,9 +19,11 @@ import java.util.List;
 public class EssFile implements Serializable {
 
     private File mFile;
+    private String mimeType;
     private String childFolderCount = "加载中";
     private String childFileCount = "加载中";
     private boolean isChecked = false;
+    private boolean isExits = false;
 
     public boolean isChecked() {
         return isChecked;
@@ -29,11 +33,39 @@ public class EssFile implements Serializable {
         isChecked = checked;
     }
 
+    public EssFile(String path){
+        mFile = new File(path);
+        if(mFile.exists()){
+            isExits = true;
+        }
+        mimeType = FileUtils.getMimeType(mFile.getAbsolutePath());
+    }
+
+    public boolean isExits() {
+        return isExits;
+    }
+
+    public void setExits(boolean exits) {
+        isExits = exits;
+    }
+
     public EssFile(File file) {
         mFile = file;
+        if(mFile.exists()){
+            isExits = true;
+        }
+        mimeType = FileUtils.getMimeType(file.getAbsolutePath());
     }
 
     protected EssFile(Parcel in) {
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getChildFolderCount() {
