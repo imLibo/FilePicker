@@ -716,7 +716,6 @@ public final class FileUtils {
         } else {
             mimeType = "*/*";
         }
-        LogUtils.verbose(pathOrUrl + ": " + mimeType);
         return mimeType;
     }
 
