@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.imlibo.filepicker.EssFilePicker;
-import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.model.EssFile;
 
 import java.util.List;
@@ -27,17 +26,17 @@ public class MainActivity extends AppCompatActivity {
                 .isByBrowser()
                 .setMaxCount(2)
                 .setFileTypes("doc","apk","mp3","gif","txt","mp4","zip","ppt","exe","png","jpg","jpeg")
-                .setOnSelectListener(new OnSelectFileListener() {
-                    @Override
-                    public void onSelectFile(List<EssFile> essFileList) {
-                        StringBuilder builder = new StringBuilder();
-                        for (EssFile file :
-                                essFileList) {
-                            builder.append(file.getMimeType()).append(" | ").append(file.getName()).append("\n\n");
-                        }
-                        textView.setText(builder.toString());
-                    }
-                })
+//                .setOnSelectListener(new OnSelectFileListener() {
+//                    @Override
+//                    public void onSelectFile(List<EssFile> essFileList) {
+//                        StringBuilder builder = new StringBuilder();
+//                        for (EssFile file :
+//                                essFileList) {
+//                            builder.append(file.getMimeType()).append(" | ").append(file.getName()).append("\n\n");
+//                        }
+//                        textView.setText(builder.toString());
+//                    }
+//                })
                 .build();
     }
 
@@ -48,17 +47,17 @@ public class MainActivity extends AppCompatActivity {
                 .isByScan()
                 .setMaxCount(10)
                 .setFileTypes("png","doc")
-                .setOnSelectListener(new OnSelectFileListener() {
-                    @Override
-                    public void onSelectFile(List<EssFile> essFileList) {
-                        StringBuilder builder = new StringBuilder();
-                        for (EssFile file :
-                                essFileList) {
-                            builder.append(file.getMimeType()).append(" | ").append(file.getName()).append("\n\n");
-                        }
-                        textView.setText(builder.toString());
-                    }
-                })
+//                .setOnSelectListener(new OnSelectFileListener() {
+//                    @Override
+//                    public void onSelectFile(List<EssFile> essFileList) {
+//                        StringBuilder builder = new StringBuilder();
+//                        for (EssFile file :
+//                                essFileList) {
+//                            builder.append(file.getMimeType()).append(" | ").append(file.getName()).append("\n\n");
+//                        }
+//                        textView.setText(builder.toString());
+//                    }
+//                })
                 .build();
     }
 

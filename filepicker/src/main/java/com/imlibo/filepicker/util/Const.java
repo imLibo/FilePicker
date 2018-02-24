@@ -89,6 +89,7 @@ public class Const {
     public static final String EXTRA_KEY_IS_MULTI_SELECT = "EXTRA_KEY_IS_MULTI_SELECT";
     /*最大可选择数量*/
     public static final String EXTRA_KEY_MAX_COUNT = "EXTRA_KEY_MAX_COUNT";
+    public static final String EXTRA_KEY_OnSelectFileListener = "EXTRA_KEY_OnSelectFileListener";
 
 
 

@@ -1,7 +1,6 @@
 package com.imlibo.filepicker.activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,6 @@ import com.imlibo.filepicker.SelectFileByBrowserEvent;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
-import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.model.BreadModel;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileEvent;
@@ -41,8 +39,11 @@ import java.util.List;
 
 /**
  * 文件浏览界面
+ * todo 用java反射动态设置onSelectListeners
  */
-public class SelectFileByBrowserActivity extends AppCompatActivity implements SelectFileByBrowserEvent, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener, View.OnClickListener {
+public class SelectFileByBrowserActivity extends AppCompatActivity
+        implements SelectFileByBrowserEvent,
+        BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener, View.OnClickListener {
 
     private static final String TAG = "SelectFileByBrowser";
 
@@ -59,8 +60,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
     private String mCurFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
     /*所有可访问存储设备列表*/
     private List<String> mSdCardList;
-    /*选中返回监听器*/
-    private static OnSelectFileListener mOnSelectFileListener;
 
     private SelectFileByBrowserPresenter mPresenter;
     private FileListAdapter mAdapter;
@@ -99,10 +98,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
         }
         initUi();
         initData();
-    }
-
-    public static void setOnSelectFileListener(OnSelectFileListener OnSelectFileListener) {
-        mOnSelectFileListener = OnSelectFileListener;
     }
 
     @Override
@@ -267,7 +262,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
             } else {
                 //选中某文件后，判断是否多选
                 if(!mIsMultiSelect){
-                    mOnSelectFileListener.onSelectFile(mSelectedFileList);
+//                    mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
                     super.onBackPressed();
                     return;
                 }
@@ -347,11 +342,11 @@ public class SelectFileByBrowserActivity extends AppCompatActivity implements Se
                return true;
             }
             //不为空
-            if(mOnSelectFileListener!=null){
-                mOnSelectFileListener.onSelectFile(mSelectedFileList);
-                super.onBackPressed();
-                return true;
-            }
+//            if(mOnSelectFileListener!=null){
+//                mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
+//                super.onBackPressed();
+//                return true;
+//            }
         } else if (i == R.id.browser_sort) {
             //排序
             new AlertDialog

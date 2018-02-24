@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.FragmentPagerAdapter;
-import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileScanActEvent;
 import com.imlibo.filepicker.model.FileScanFragEvent;
@@ -42,8 +41,6 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
     private boolean mIsMultiSelect = true;
     /*最多可选择个数，默认10*/
     private int mMaxCount;
-
-    private static OnSelectFileListener mOnSelectFileListener;
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -101,9 +98,6 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
 
     }
 
-    public static void setOnSelectFileListener(OnSelectFileListener onSelectFileListener) {
-        SelectFileByScanActivity.mOnSelectFileListener = onSelectFileListener;
-    }
 
     /**
      * Fragment中选择文件后
@@ -114,7 +108,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         if(event.isAdd()){
             if(!mIsMultiSelect){
                 mSelectedFileList.add(event.getSelectedFile());
-                mOnSelectFileListener.onSelectFile(mSelectedFileList);
+//                mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
                 super.onBackPressed();
                 return;
             }
@@ -149,11 +143,11 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
                 return true;
             }
             //不为空
-            if(mOnSelectFileListener!=null){
-                mOnSelectFileListener.onSelectFile(mSelectedFileList);
-                super.onBackPressed();
-                return true;
-            }
+//            if(mOnSelectFileListener!=null){
+////                mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
+//                super.onBackPressed();
+//                return true;
+//            }
         } else if (i == R.id.browser_sort) {
             //排序
             new AlertDialog

@@ -2,10 +2,10 @@ package com.imlibo.filepicker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.imlibo.filepicker.activity.SelectFileByBrowserActivity;
 import com.imlibo.filepicker.activity.SelectFileByScanActivity;
-import com.imlibo.filepicker.callback.OnSelectFileListener;
 import com.imlibo.filepicker.util.Const;
 
 /**
@@ -24,20 +24,20 @@ public class EssFilePicker {
         intent.putExtra(Const.EXTRA_KEY_MAX_COUNT, builder.maxCount);
         if(builder.isByBrowser){
             intent.setClass(builder.mContext,SelectFileByBrowserActivity.class);
-            SelectFileByBrowserActivity.setOnSelectFileListener(builder.onSelectFileListener);
+//            SelectFileByBrowserActivity.setOnSelectFileListener(builder.onSelectFileListener);
         }
         if(builder.isByScan){
             intent.setClass(builder.mContext, SelectFileByScanActivity.class);
-            SelectFileByScanActivity.setOnSelectFileListener(builder.onSelectFileListener);
+//            SelectFileByScanActivity.setOnSelectFileListener(builder.onSelectFileListener);
         }
         builder.mContext.startActivity(intent);
+
     }
 
     public static class Builder{
         private String[] mFileTypes;
         private String mSortType;
         private boolean isMultiSelect;
-        private OnSelectFileListener onSelectFileListener;
         private boolean isByBrowser = false;
         private boolean isByScan = false;
         private int maxCount = 10;
@@ -67,10 +67,6 @@ public class EssFilePicker {
             return this;
         }
 
-        public Builder setOnSelectListener(OnSelectFileListener onSelectListener){
-            this.onSelectFileListener = onSelectListener;
-            return this;
-        }
 
         public Builder isByBrowser(){
             this.isByBrowser = true;
