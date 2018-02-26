@@ -1,14 +1,11 @@
 package com.imlibo.filepicker.activity;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.imlibo.filepicker.BaseFileFragment;
@@ -18,6 +15,7 @@ import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileScanActEvent;
 import com.imlibo.filepicker.model.FileScanFragEvent;
+import com.imlibo.filepicker.model.FileScanSortChangedEvent;
 import com.imlibo.filepicker.presenter.SelectFileByScanPresenter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -105,6 +103,15 @@ public class FileTypeListFragment extends BaseFileFragment implements SelectFile
     @Subscribe
     public void onFreshCount(FileScanActEvent event){
         mMaxCount = event.getCanSelectMaxCount();
+    }
+
+    /**
+     * 接收到Activity改变排序方式后
+     */
+    @Subscribe
+    public void onFreshSortType(FileScanSortChangedEvent event){
+        mSortType = event.getSortType();
+        mPresenter.findFileList(mFileType,mSortType,0);
     }
 
     @Override

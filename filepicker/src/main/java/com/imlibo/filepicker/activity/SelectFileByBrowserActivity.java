@@ -1,6 +1,7 @@
 package com.imlibo.filepicker.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.SelectFileByBrowserEvent;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
+import com.imlibo.filepicker.adapter.OnFileSelectListener;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
 import com.imlibo.filepicker.model.BreadModel;
 import com.imlibo.filepicker.model.EssFile;
@@ -44,8 +46,6 @@ import java.util.List;
 public class SelectFileByBrowserActivity extends AppCompatActivity
         implements SelectFileByBrowserEvent,
         BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener, View.OnClickListener {
-
-    private static final String TAG = "SelectFileByBrowser";
 
     /*只展示指定文件名后缀的文件*/
     private String[] mFileTypes;
@@ -73,7 +73,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     /*是否刚才切换了SD卡路径*/
     private boolean mHasChangeSdCard = false;
     /*已选中的文件列表*/
-    private List<EssFile> mSelectedFileList = new ArrayList<>();
+    private ArrayList<EssFile> mSelectedFileList = new ArrayList<>();
     /*当前选中排序方式的位置*/
     private int mSelectSortTypeIndex = 0;
     private MenuItem mCountMenuItem;
@@ -104,7 +104,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browse_menu, menu);
         mCountMenuItem = menu.findItem(R.id.browser_select_count);
-        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count),String.valueOf(mSelectedFileList.size()),String.valueOf(mMaxCount)));
+        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
         return true;
     }
 
@@ -144,7 +144,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     }
 
     private void initData() {
-        mPresenter.findFileList(mSelectedFileList,mCurFolder, mFileTypes, mSortType);
+        mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
     }
 
     /**
@@ -261,26 +261,28 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                 mPresenter.findFileList(mSelectedFileList, mCurFolder + item.getName() + File.separator, mFileTypes, mSortType);
             } else {
                 //选中某文件后，判断是否多选
-                if(!mIsMultiSelect){
-//                    mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
+                if (!mIsMultiSelect) {
+                    Intent result = new Intent();
+                    result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);
+                    setResult(RESULT_OK, result);
                     super.onBackPressed();
                     return;
                 }
-                if(mAdapter.getData().get(position).isChecked()){
+                if (mAdapter.getData().get(position).isChecked()) {
                     int index = findFileIndex(item);
-                    if(index != -1){
+                    if (index != -1) {
                         mSelectedFileList.remove(index);
                     }
-                }else {
-                    if(mSelectedFileList.size() >= mMaxCount){
+                } else {
+                    if (mSelectedFileList.size() >= mMaxCount) {
                         //超出最大可选择数量后
                         return;
                     }
                     mSelectedFileList.add(item);
                 }
                 mAdapter.getData().get(position).setChecked(!mAdapter.getData().get(position).isChecked());
-                mAdapter.notifyItemChanged(position,"");
-                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count),String.valueOf(mSelectedFileList.size()),String.valueOf(mMaxCount)));
+                mAdapter.notifyItemChanged(position, "");
+                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
             }
         }
     }
@@ -290,7 +292,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
      */
     private int findFileIndex(EssFile item) {
         for (int i = 0; i < mSelectedFileList.size(); i++) {
-            if(mSelectedFileList.get(i).getAbsolutePath().equals(item.getAbsolutePath())){
+            if (mSelectedFileList.get(i).getAbsolutePath().equals(item.getAbsolutePath())) {
                 return i;
             }
         }
@@ -338,15 +340,14 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         int i = item.getItemId();
         if (i == R.id.browser_select_count) {
             //选中
-            if(mSelectedFileList.isEmpty()){
-               return true;
+            if (mSelectedFileList.isEmpty()) {
+                return true;
             }
             //不为空
-//            if(mOnSelectFileListener!=null){
-//                mOnSelectFileListener.onSelectFileListener_1.onSelectFile(mSelectedFileList);
-//                super.onBackPressed();
-//                return true;
-//            }
+            Intent result = new Intent();
+            result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);
+            setResult(RESULT_OK, result);
+            super.onBackPressed();
         } else if (i == R.id.browser_sort) {
             //排序
             new AlertDialog
@@ -360,7 +361,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                     .setNegativeButton("降序", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (mSelectSortTypeIndex){
+                            switch (mSelectSortTypeIndex) {
                                 case 0:
                                     mSortType = FileUtils.BY_NAME_DESC;
                                     break;
@@ -380,7 +381,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                     .setPositiveButton("升序", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (mSelectSortTypeIndex){
+                            switch (mSelectSortTypeIndex) {
                                 case 0:
                                     mSortType = FileUtils.BY_NAME_ASC;
                                     break;
