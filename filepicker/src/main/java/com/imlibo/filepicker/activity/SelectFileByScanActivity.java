@@ -43,6 +43,8 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
     private boolean mIsMultiSelect = true;
     /*最多可选择个数，默认10*/
     private int mMaxCount;
+    /*todo 是否可预览文件，默认可预览*/
+    private boolean mCanPreview = true;
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;

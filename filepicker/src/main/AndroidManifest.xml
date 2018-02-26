@@ -6,9 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
-        <activity android:name=".activity.SelectFileByBrowserActivity"/>
+        <activity android:name=".activity.SelectFileByBrowserActivity" />
         <activity android:name=".activity.SelectPictureActivity" />
-        <activity android:name=".activity.SelectFileByScanActivity"/>
+        <activity android:name=".activity.SelectFileByScanActivity" />
+
         <provider
             android:name=".model.EssFileProvider"
             android:authorities="${applicationId}.ess.file.provider"
@@ -16,8 +17,10 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity android:name=".activity.PicturesViewActivity"></activity>
     </application>
 
 </manifest>

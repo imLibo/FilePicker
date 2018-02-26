@@ -41,7 +41,6 @@ import java.util.List;
 
 /**
  * 文件浏览界面
- * todo 用java反射动态设置onSelectListeners
  */
 public class SelectFileByBrowserActivity extends AppCompatActivity
         implements SelectFileByBrowserEvent,
@@ -55,6 +54,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     private boolean mIsMultiSelect = true;
     /*最多可选择个数*/
     private int mMaxCount = 10;
+    /*todo 是否可预览文件，默认可预览*/
+    private boolean mCanPreview = true;
 
     /*当前目录，默认是SD卡根目录*/
     private String mCurFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
