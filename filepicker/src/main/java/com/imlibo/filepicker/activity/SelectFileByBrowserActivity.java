@@ -23,7 +23,6 @@ import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.SelectFileByBrowserEvent;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
-import com.imlibo.filepicker.adapter.OnFileSelectListener;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
 import com.imlibo.filepicker.model.BreadModel;
 import com.imlibo.filepicker.model.EssFile;
@@ -50,8 +49,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     private String[] mFileTypes;
     /*文件列表排序类型，默认按文件名升序排列*/
     private int mSortType = FileUtils.BY_NAME_ASC;
-    /*是否是多选，默认否*/
-    private boolean mIsMultiSelect = true;
+    /*是否是单选，默认否*/
+    private boolean mIsSingle = false;
     /*最多可选择个数*/
     private int mMaxCount = 10;
     /*todo 是否可预览文件，默认可预览*/
@@ -86,13 +85,10 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         EventBus.getDefault().register(this);
         mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
         mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
-        mIsMultiSelect = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_MULTI_SELECT, true);
+        mIsSingle = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_SINGLE, false);
         mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
         mPresenter = new SelectFileByBrowserPresenter(this);
 
-        if (!checkPermissionAndCheckSDCardEnabled()) {
-            return;
-        }
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {
             mCurFolder = mSdCardList.get(0) + File.separator;
@@ -146,13 +142,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
 
     private void initData() {
         mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
-    }
-
-    /**
-     * 检查文件读写权限，并检查Sd卡是否可用
-     */
-    private boolean checkPermissionAndCheckSDCardEnabled() {
-        return true;
     }
 
     /**
@@ -261,8 +250,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                 mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(mRecyclerView.computeVerticalScrollOffset());
                 mPresenter.findFileList(mSelectedFileList, mCurFolder + item.getName() + File.separator, mFileTypes, mSortType);
             } else {
-                //选中某文件后，判断是否多选
-                if (!mIsMultiSelect) {
+                //选中某文件后，判断是否单选
+                if (mIsSingle) {
                     Intent result = new Intent();
                     result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);
                     setResult(RESULT_OK, result);
@@ -376,6 +365,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                                     mSortType = FileUtils.BY_EXTENSION_DESC;
                                     break;
                             }
+                            //恢复排序
+                            mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
                             mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
                         }
                     })
@@ -396,6 +387,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                                     mSortType = FileUtils.BY_EXTENSION_ASC;
                                     break;
                             }
+                            //恢复排序
+                            mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
                             mPresenter.findFileList(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
                         }
                     })

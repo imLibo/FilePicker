@@ -32,12 +32,12 @@ import java.util.List;
 public class FileTypeListFragment extends BaseFileFragment implements SelectFileByScanEvent, BaseQuickAdapter.OnItemClickListener {
 
     private static final String ARG_FileType = "ARG_FileType";
-    private static final String ARG_IsMultiSelect = "mIsMultiSelect";
+    private static final String ARG_IsSingle = "mIsSingle";
     private static final String ARG_MaxCount = "mMaxCount";
     private static final String ARG_SortType = "mSortType";
 
     private String mFileType;
-    private boolean mIsMultiSelect;
+    private boolean mIsSingle;
     private int mMaxCount;
     private int mSortType;
 
@@ -50,11 +50,11 @@ public class FileTypeListFragment extends BaseFileFragment implements SelectFile
     public FileTypeListFragment() {
     }
 
-    public static FileTypeListFragment newInstance(String param1, boolean mIsMultiSelect, int mMaxCount, int mSortType) {
+    public static FileTypeListFragment newInstance(String param1, boolean IsSingle, int mMaxCount, int mSortType) {
         FileTypeListFragment fragment = new FileTypeListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_FileType, param1);
-        args.putBoolean(ARG_IsMultiSelect, mIsMultiSelect);
+        args.putBoolean(ARG_IsSingle, IsSingle);
         args.putInt(ARG_MaxCount, mMaxCount);
         args.putInt(ARG_SortType, mSortType);
         fragment.setArguments(args);
@@ -66,7 +66,7 @@ public class FileTypeListFragment extends BaseFileFragment implements SelectFile
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mFileType = getArguments().getString(ARG_FileType);
-            mIsMultiSelect = getArguments().getBoolean(ARG_IsMultiSelect);
+            mIsSingle = getArguments().getBoolean(ARG_IsSingle);
             mMaxCount = getArguments().getInt(ARG_MaxCount);
             mSortType = getArguments().getInt(ARG_SortType);
         }
@@ -125,8 +125,8 @@ public class FileTypeListFragment extends BaseFileFragment implements SelectFile
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         EssFile item = mAdapter.getData().get(position);
-        //选中某文件后，判断是否多选
-        if(!mIsMultiSelect){
+        //选中某文件后，判断是否单选
+        if(mIsSingle){
             mSelectedFileList.add(item);
             EventBus.getDefault().post(new FileScanFragEvent(item,true));
             return;

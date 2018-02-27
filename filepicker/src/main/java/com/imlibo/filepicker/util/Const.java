@@ -86,7 +86,7 @@ public class Const {
     /*排序类型*/
     public static final String EXTRA_KEY_SORT_TYPE = "EXTRA_KEY_SORT_TYPE";
     /*是否多选*/
-    public static final String EXTRA_KEY_IS_MULTI_SELECT = "EXTRA_KEY_IS_MULTI_SELECT";
+    public static final String EXTRA_KEY_IS_SINGLE = "EXTRA_KEY_IS_SINGLE";
     /*最大可选择数量*/
     public static final String EXTRA_KEY_MAX_COUNT = "EXTRA_KEY_MAX_COUNT";
     public static final String EXTRA_KEY_OnSelectFileListener = "EXTRA_KEY_OnSelectFileListener";

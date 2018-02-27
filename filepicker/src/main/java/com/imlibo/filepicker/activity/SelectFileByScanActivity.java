@@ -39,8 +39,8 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
     private String[] mFileTypes;
     /*文件列表排序类型，默认按文件名升序排列*/
     private int mSortType = FileUtils.BY_NAME_ASC;
-    /*是否是多选，默认否*/
-    private boolean mIsMultiSelect = true;
+    /*是否是单选，默认否*/
+    private boolean mIsSingle = false;
     /*最多可选择个数，默认10*/
     private int mMaxCount;
     /*todo 是否可预览文件，默认可预览*/
@@ -62,7 +62,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         EventBus.getDefault().register(this);
         mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
         mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
-        mIsMultiSelect = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_MULTI_SELECT, true);
+        mIsSingle = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_SINGLE, false);
         mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
         initUi();
         initData();
@@ -92,7 +92,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         List<Fragment> fragmentList = new ArrayList<>();
         for (String fileType :
                 mFileTypes) {
-            fragmentList.add(FileTypeListFragment.newInstance(fileType, mIsMultiSelect, mMaxCount, mSortType));
+            fragmentList.add(FileTypeListFragment.newInstance(fileType, mIsSingle, mMaxCount, mSortType));
         }
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager(), fragmentList, Arrays.asList(mFileTypes));
         mViewPager.setAdapter(adapter);
@@ -111,7 +111,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
     @Subscribe
     public void onFragSelectFile(FileScanFragEvent event) {
         if (event.isAdd()) {
-            if (!mIsMultiSelect) {
+            if (mIsSingle) {
                 mSelectedFileList.add(event.getSelectedFile());
                 Intent result = new Intent();
                 result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);

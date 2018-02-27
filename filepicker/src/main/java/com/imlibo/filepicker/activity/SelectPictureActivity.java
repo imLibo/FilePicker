@@ -1,9 +1,14 @@
 package com.imlibo.filepicker.activity;
 
+import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.util.FileUtils;
@@ -33,19 +38,31 @@ public class SelectPictureActivity extends AppCompatActivity {
     private boolean mUseCustomCamera = true;
     /*9. 是否可预览图片，默认可预览*/
     private boolean mCanPreview = true;
+    /*10. 主题*/
+    private int mTheme = R.style.Matisse_Zhihu;
 
-    private Toolbar mToolBar;
     private RecyclerView mRecyclerView;
+    private TextView mTvSelectedFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(mTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_picture);
-        EventBus.getDefault().register(this);
-        mToolBar = findViewById(R.id.toolbar);
+//        EventBus.getDefault().register(this);
         mRecyclerView = findViewById(R.id.rcv_file_picture_list);
+        mTvSelectedFolder = findViewById(R.id.selected_folder);
 
-
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        Drawable navigationIcon = toolbar.getNavigationIcon();
+        TypedArray ta = getTheme().obtainStyledAttributes(new int[]{R.attr.album_element_color});
+        int color = ta.getColor(0, 0);
+        ta.recycle();
+        navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
     }
 

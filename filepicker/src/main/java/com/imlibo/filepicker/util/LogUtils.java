@@ -23,7 +23,7 @@ public final class LogUtils {
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
     private static final int METHOD_COUNT = 2; // show method count in trace
     private static boolean isDebug = BuildConfig.DEBUG;// 是否调试模式
-    private static String debugTag = "EssFilePicker";// LogCat的标记
+    private static String debugTag = "FilePicker";// LogCat的标记
 
     public static void setIsDebug(boolean isDebug) {
         LogUtils.isDebug = isDebug;

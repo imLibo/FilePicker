@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.imlibo.filepicker.EssFilePicker;
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.util.Const;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_browse)
     public void onBrowse(View view) {
-        new EssFilePicker.Builder(this)
-                .isMultiSelect(true)
+        new FilePicker.Builder(this)
                 .isByBrowser()
                 .setMaxCount(2)
                 .setFileTypes("doc", "apk", "mp3", "gif", "txt", "mp4", "zip", "ppt", "exe", "png", "jpg", "jpeg")
@@ -37,11 +35,18 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_scan)
     public void onScan(View view) {
-        new EssFilePicker.Builder(this)
-                .isMultiSelect(true)
+        new FilePicker.Builder(this)
                 .isByScan()
                 .setMaxCount(10)
                 .setFileTypes("png", "doc")
+                .requestCode(REQUEST_CODE_CHOOSE)
+                .build();
+    }
+
+    @OnClick(R.id.button_select_pictures)
+    public void onSelectPitures(View view){
+        new FilePicker.Builder(this)
+                .isSelectMedia()
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .build();
     }

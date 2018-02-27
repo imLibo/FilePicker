@@ -20,7 +20,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.PicturesViewActivity"></activity>
+        <activity android:name=".activity.PicturesViewActivity"/>
     </application>
 
 </manifest>

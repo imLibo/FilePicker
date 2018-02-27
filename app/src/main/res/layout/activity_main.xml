@@ -22,8 +22,10 @@
         android:id="@+id/button_scan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
         android:text="按文件类型选择文件"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,11 +33,23 @@
         android:id="@+id/textView_filename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="160dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_browse" />
+
+    <Button
+        android:id="@+id/button_select_pictures"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="23dp"
+        android:text="选择照片"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_scan" />
 
 
 </android.support.constraint.ConstraintLayout>
