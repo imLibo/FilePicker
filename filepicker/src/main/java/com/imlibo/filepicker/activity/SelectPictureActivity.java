@@ -1,6 +1,7 @@
 package com.imlibo.filepicker.activity;
 
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
@@ -8,17 +9,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.imlibo.filepicker.R;
+import com.imlibo.filepicker.adapter.BuketAdapter;
+import com.imlibo.filepicker.loader.EssMediaCollection;
+import com.imlibo.filepicker.model.Album;
 import com.imlibo.filepicker.util.FileUtils;
+import com.imlibo.filepicker.widget.ToolbarSpinner;
 
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * 选择图片界面
  */
-public class SelectPictureActivity extends AppCompatActivity {
+public class SelectPictureActivity extends AppCompatActivity implements EssMediaCollection.EssMediaCallbacks, AdapterView.OnItemSelectedListener {
 
     /*1. 只展示指定文件名后缀的文件*/
     private String[] mFileTypes;
@@ -43,6 +50,9 @@ public class SelectPictureActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private TextView mTvSelectedFolder;
+    private BuketAdapter mBuketAdapter;
+
+    private final EssMediaCollection mMediaCollection = new EssMediaCollection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +74,43 @@ public class SelectPictureActivity extends AppCompatActivity {
         ta.recycle();
         navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
+
+
+        mBuketAdapter = new BuketAdapter(this,null,false);
+        ToolbarSpinner spinner = new ToolbarSpinner(this);
+        spinner.setSelectedTextView((TextView) findViewById(R.id.selected_folder));
+        spinner.setPopupAnchorView(findViewById(R.id.toolbar));
+        spinner.setOnItemSelectedListener(this);
+        spinner.setAdapter(mBuketAdapter);
+
+        mMediaCollection.onCreate(this,this);
+        mMediaCollection.load();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMediaCollection.onDestroy();
+    }
 
+    @Override
+    public void onAlbumMediaLoad(Cursor cursor) {
+        mBuketAdapter.swapCursor(cursor);
+    }
 
+    @Override
+    public void onAlbumMediaReset() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mBuketAdapter.getCursor().moveToPosition(position);
+        Album album = Album.valueOf(mBuketAdapter.getCursor());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

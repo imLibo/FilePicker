@@ -105,7 +105,7 @@ public class ToolbarSpinner {
         ta.recycle();
         right.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
-        mSelected.setVisibility(View.GONE);
+        mSelected.setVisibility(View.VISIBLE);
         mSelected.setOnClickListener(new View.OnClickListener() {
 
             @Override
