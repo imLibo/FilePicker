@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSelectPitures(View view){
         new FilePicker.Builder(this)
                 .isSelectMedia()
+                .enabledCapture(true)
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .build();
     }

@@ -7,25 +7,34 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.BuketAdapter;
+import com.imlibo.filepicker.adapter.EssMediaAdapter;
+import com.imlibo.filepicker.loader.EssAlbumCollection;
 import com.imlibo.filepicker.loader.EssMediaCollection;
 import com.imlibo.filepicker.model.Album;
+import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.util.FileUtils;
+import com.imlibo.filepicker.util.UiUtils;
+import com.imlibo.filepicker.widget.MediaItemDecoration;
 import com.imlibo.filepicker.widget.ToolbarSpinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * 选择图片界面
  */
-public class SelectPictureActivity extends AppCompatActivity implements EssMediaCollection.EssMediaCallbacks, AdapterView.OnItemSelectedListener {
+public class SelectPictureActivity extends AppCompatActivity implements EssAlbumCollection.EssAlbumCallbacks, AdapterView.OnItemSelectedListener, EssMediaCollection.EssMediaCallbacks, BaseQuickAdapter.OnItemChildClickListener {
 
     /*1. 只展示指定文件名后缀的文件*/
     private String[] mFileTypes;
@@ -51,7 +60,9 @@ public class SelectPictureActivity extends AppCompatActivity implements EssMedia
     private RecyclerView mRecyclerView;
     private TextView mTvSelectedFolder;
     private BuketAdapter mBuketAdapter;
+    private EssMediaAdapter mMediaAdapter;
 
+    private final EssAlbumCollection mAlbumCollection = new EssAlbumCollection();
     private final EssMediaCollection mMediaCollection = new EssMediaCollection();
 
     @Override
@@ -74,8 +85,6 @@ public class SelectPictureActivity extends AppCompatActivity implements EssMedia
         ta.recycle();
         navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
-
-
         mBuketAdapter = new BuketAdapter(this,null,false);
         ToolbarSpinner spinner = new ToolbarSpinner(this);
         spinner.setSelectedTextView((TextView) findViewById(R.id.selected_folder));
@@ -83,14 +92,24 @@ public class SelectPictureActivity extends AppCompatActivity implements EssMedia
         spinner.setOnItemSelectedListener(this);
         spinner.setAdapter(mBuketAdapter);
 
+        mAlbumCollection.onCreate(this,this);
+        mAlbumCollection.load();
+
         mMediaCollection.onCreate(this,this);
-        mMediaCollection.load();
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mRecyclerView.addItemDecoration(new MediaItemDecoration());
+        mMediaAdapter = new EssMediaAdapter(new ArrayList<EssFile>());
+        mMediaAdapter.setmImageResize(UiUtils.getImageResize(this,mRecyclerView));
+        mRecyclerView.setAdapter(mMediaAdapter);
+        mMediaAdapter.bindToRecyclerView(mRecyclerView);
+        mMediaAdapter.setOnItemChildClickListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMediaCollection.onDestroy();
+        mAlbumCollection.onDestroy();
     }
 
     @Override
@@ -107,10 +126,36 @@ public class SelectPictureActivity extends AppCompatActivity implements EssMedia
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mBuketAdapter.getCursor().moveToPosition(position);
         Album album = Album.valueOf(mBuketAdapter.getCursor());
+        mMediaCollection.load(album,mNeedCamera);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onMediaLoad(List<EssFile> essFileList) {
+        mMediaAdapter.setNewData(essFileList);
+        if(essFileList == null || essFileList.isEmpty()){
+            mMediaAdapter.setEmptyView(R.layout.empty_file_list);
+        }
+    }
+
+    @Override
+    public void onmMediaReset() {
+
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        if(adapter.equals(mMediaAdapter)){
+            if(view.getId() == R.id.check_view){
+                mMediaAdapter.getData().get(position).setChecked(!mMediaAdapter.getData().get(position).isChecked());
+                mMediaAdapter.notifyItemChanged(position,"");
+            }else if(view.getId() == R.id.media_thumbnail){
+
+            }
+        }
     }
 }

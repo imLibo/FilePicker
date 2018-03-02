@@ -23,8 +23,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 
-import com.imlibo.filepicker.R;
-import com.imlibo.filepicker.loader.EssMediaLoader;
+import com.imlibo.filepicker.loader.EssAlbumLoader;
 
 public class Album implements Parcelable {
     public static final Creator<Album> CREATOR = new Creator<Album>() {
@@ -70,7 +69,7 @@ public class Album implements Parcelable {
                 cursor.getString(cursor.getColumnIndex("bucket_id")),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex("bucket_display_name")),
-                cursor.getLong(cursor.getColumnIndex(EssMediaLoader.COLUMN_COUNT)));
+                cursor.getLong(cursor.getColumnIndex(EssAlbumLoader.COLUMN_COUNT)));
     }
 
     @Override

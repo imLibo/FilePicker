@@ -28,6 +28,8 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.imlibo.filepicker.R;
+import com.imlibo.filepicker.model.Album;
+import com.imlibo.filepicker.util.Platform;
 
 public class ToolbarSpinner {
 
@@ -70,23 +72,23 @@ public class ToolbarSpinner {
         mListPopupWindow.dismiss();
         Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(position);
-//        Album album = Album.valueOf(cursor);
-//        String displayName = album.getDisplayName(context);
-//        if (mSelected.getVisibility() == View.VISIBLE) {
-//            mSelected.setText(displayName);
-//        } else {
-//            if (Platform.hasICS()) {
-//                mSelected.setAlpha(0.0f);
-//                mSelected.setVisibility(View.VISIBLE);
-//                mSelected.setText(displayName);
-//                mSelected.animate().alpha(1.0f).setDuration(context.getResources().getInteger(
-//                        android.R.integer.config_longAnimTime)).start();
-//            } else {
-//                mSelected.setVisibility(View.VISIBLE);
-//                mSelected.setText(displayName);
-//            }
-//
-//        }
+        Album album = Album.valueOf(cursor);
+        String displayName = album.getDisplayName(context);
+        if (mSelected.getVisibility() == View.VISIBLE) {
+            mSelected.setText(displayName);
+        } else {
+            if (Platform.hasICS()) {
+                mSelected.setAlpha(0.0f);
+                mSelected.setVisibility(View.VISIBLE);
+                mSelected.setText(displayName);
+                mSelected.animate().alpha(1.0f).setDuration(context.getResources().getInteger(
+                        android.R.integer.config_longAnimTime)).start();
+            } else {
+                mSelected.setVisibility(View.VISIBLE);
+                mSelected.setText(displayName);
+            }
+
+        }
     }
 
     public void setAdapter(CursorAdapter adapter) {

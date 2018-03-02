@@ -50,6 +50,7 @@ public class BuketAdapter extends CursorAdapter{
                 .with(context)
                 .load(album.getCoverPath())
                 .placeholder(mPlaceholder)
+                .centerCrop()
                 .into((ImageView) view.findViewById(R.id.album_cover));
     }
 }

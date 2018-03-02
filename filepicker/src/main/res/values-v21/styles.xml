@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:colorControlNormal">@color/zhihu_album_dropdown_count_text</item>
+        <item name="android:colorControlActivated">@color/zhihu_primary</item>
+    </style>
+</resources>

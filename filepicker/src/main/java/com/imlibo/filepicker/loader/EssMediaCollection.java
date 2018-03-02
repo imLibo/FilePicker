@@ -1,33 +1,35 @@
-/*
- * Copyright (C) 2014 nohana, Inc.
- * Copyright 2017 Zhihu Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.imlibo.filepicker.loader;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import java.lang.ref.WeakReference;
+import com.imlibo.filepicker.model.Album;
+import com.imlibo.filepicker.model.EssFile;
 
-public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int LOADER_ID = 2;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * EssMediaCollection
+ * Created by 李波 on 2018/3/2.
+ */
+
+public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    private static final int LOADER_ID = 3;
+    private static final String ARGS_ALBUM = "args_album";
+    private static final String ARGS_ENABLE_CAPTURE = "args_enable_capture";
+    private static final String ARGS_ONLY_SHOWIMAGE = "ARGS_ONLY_SHOWIMAGE";
     private WeakReference<Context> mContext;
     private LoaderManager mLoaderManager;
     private EssMediaCallbacks mCallbacks;
@@ -39,7 +41,12 @@ public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>
             return null;
         }
 
-        return EssMediaLoader.newInstance(context, false);
+        Album album = args.getParcelable(ARGS_ALBUM);
+        if (album == null) {
+            return null;
+        }
+
+        return EssMediaLoader.newInstance(context, album);
     }
 
     @Override
@@ -49,7 +56,14 @@ public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>
             return;
         }
 
-        mCallbacks.onAlbumMediaLoad(data);
+        List<EssFile> essFileList = new ArrayList<>();
+        while (data.moveToNext()){
+            EssFile essFile = new EssFile(data.getLong(data.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)),
+                    data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)));
+            essFileList.add(essFile);
+        }
+
+        mCallbacks.onMediaLoad(essFileList);
     }
 
     @Override
@@ -59,7 +73,7 @@ public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>
             return;
         }
 
-        mCallbacks.onAlbumMediaReset();
+        mCallbacks.onmMediaReset();
     }
 
     public void onCreate(@NonNull FragmentActivity context, @NonNull EssMediaCallbacks callbacks) {
@@ -73,15 +87,37 @@ public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>
         mCallbacks = null;
     }
 
-    public void load() {
+    public void load(@Nullable Album target) {
+        load(target, false);
+    }
+
+    public void load(@Nullable Album target, boolean enableCapture) {
         Bundle args = new Bundle();
-        mLoaderManager.initLoader(LOADER_ID, args, this);
+        args.putParcelable(ARGS_ALBUM, target);
+        args.putBoolean(ARGS_ENABLE_CAPTURE, enableCapture);
+        if(mContext.get() == null){
+            mLoaderManager.initLoader(LOADER_ID, args, this);
+        }else {
+            mLoaderManager.restartLoader(LOADER_ID,args,this);
+        }
+    }
+
+    public void load(@Nullable Album target, boolean enableCapture, boolean onlyShouwIMage) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARGS_ALBUM, target);
+        args.putBoolean(ARGS_ENABLE_CAPTURE, enableCapture);
+        args.putBoolean(ARGS_ONLY_SHOWIMAGE, onlyShouwIMage);
+        if(mContext.get() == null){
+            mLoaderManager.initLoader(LOADER_ID, args, this);
+        }else {
+            mLoaderManager.restartLoader(LOADER_ID,args,this);
+        }
     }
 
     public interface EssMediaCallbacks {
 
-        void onAlbumMediaLoad(Cursor cursor);
+        void onMediaLoad(List<EssFile> cursor);
 
-        void onAlbumMediaReset();
+        void onmMediaReset();
     }
 }

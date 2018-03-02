@@ -1,8 +1,12 @@
 package com.imlibo.filepicker.util;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+
+import com.imlibo.filepicker.R;
 
 /**
  * UiUtils
@@ -21,4 +25,14 @@ public class UiUtils {
         DisplayMetrics metrics = c.getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
+
+    public static int getImageResize(Context context,RecyclerView recyclerView) {
+        int mImageResize;
+        RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
+        int spanCount = ((GridLayoutManager) lm).getSpanCount();
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        mImageResize = screenWidth / spanCount;
+        return mImageResize;
+    }
+
 }

@@ -1,11 +1,17 @@
 package com.imlibo.filepicker.model;
 
+import android.content.ContentUris;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 
 import com.imlibo.filepicker.util.FileUtils;
+import com.imlibo.filepicker.util.MimeType;
+import com.imlibo.filepicker.util.PathUtils;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +31,7 @@ public class EssFile implements Parcelable {
     private boolean isDirectory = false;
     private boolean isFile = false;
     private String mFileName;
+    private Uri uri;
 
     protected EssFile(Parcel in) {
         mFilePath = in.readString();
@@ -78,6 +85,24 @@ public class EssFile implements Parcelable {
             isFile = file.isFile();
         }
         mimeType = FileUtils.getMimeType(file.getAbsolutePath());
+    }
+
+    public EssFile(long id , String mimeType){
+        this.mimeType = mimeType;
+        Uri contentUri;
+        if (isImage()) {
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else if (isVideo()) {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            // ?
+            contentUri = MediaStore.Files.getContentUri("external");
+        }
+        this.uri = ContentUris.withAppendedId(contentUri, id);
+    }
+
+    public Uri getUri() {
+        return uri;
     }
 
     public boolean isExits() {
@@ -166,5 +191,32 @@ public class EssFile implements Parcelable {
         dest.writeByte((byte) (isDirectory ? 1 : 0));
         dest.writeByte((byte) (isFile ? 1 : 0));
         dest.writeString(mFileName);
+    }
+
+    public boolean isImage() {
+        if (mimeType == null) return false;
+        return mimeType.equals(MimeType.JPEG.toString())
+                || mimeType.equals(MimeType.PNG.toString())
+                || mimeType.equals(MimeType.GIF.toString())
+                || mimeType.equals(MimeType.BMP.toString())
+                || mimeType.equals(MimeType.WEBP.toString());
+    }
+
+    public boolean isGif() {
+        if (mimeType == null) return false;
+        return mimeType.equals(MimeType.GIF.toString());
+    }
+
+    public boolean isVideo() {
+        if (mimeType == null) return false;
+        return mimeType.equals(MimeType.MPEG.toString())
+                || mimeType.equals(MimeType.MP4.toString())
+                || mimeType.equals(MimeType.QUICKTIME.toString())
+                || mimeType.equals(MimeType.THREEGPP.toString())
+                || mimeType.equals(MimeType.THREEGPP2.toString())
+                || mimeType.equals(MimeType.MKV.toString())
+                || mimeType.equals(MimeType.WEBM.toString())
+                || mimeType.equals(MimeType.TS.toString())
+                || mimeType.equals(MimeType.AVI.toString());
     }
 }

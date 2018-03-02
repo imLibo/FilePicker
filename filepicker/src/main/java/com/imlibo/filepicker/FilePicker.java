@@ -26,7 +26,10 @@ import java.util.List;
 
 public class FilePicker {
 
+    private static Builder builder;
+
     FilePicker(final Builder builder) {
+        FilePicker.builder = builder;
         final Activity activity = builder.getActivity();
         if (activity == null) {
             return;
@@ -69,6 +72,9 @@ public class FilePicker {
 
     }
 
+    public static Builder getBuilder() {
+        return builder;
+    }
 
     public static class Builder{
 
@@ -80,9 +86,12 @@ public class FilePicker {
         private boolean isSingle = false;
         private boolean isByBrowser = true;
         private boolean isByScan = false;
+        private boolean isSelectMedia = false;
         private int maxCount = 10;
         private int request_code;
-        private boolean isSelectMedia = false;
+        private boolean onlyShowImages = false;
+        private boolean onlyShowVideos = false;
+        private boolean enabledCapture = true;
 
         public Builder(Activity activity) {
             this(activity,null);
@@ -124,6 +133,32 @@ public class FilePicker {
             return this;
         }
 
+        public Builder onlyShowImages(){
+            this.onlyShowImages = true;
+            return this;
+        }
+
+        public Builder onlyShowVideos(){
+            this.onlyShowVideos = true;
+            return this;
+        }
+
+        public Builder enabledCapture(boolean enabledCapture){
+            this.enabledCapture = enabledCapture;
+            return this;
+        }
+
+        public boolean isOnlyShowImages(){
+            return onlyShowImages;
+        }
+
+        public boolean isOnlyShowVideos(){
+            return onlyShowVideos;
+        }
+
+        public boolean isEnabledCapture(){
+            return enabledCapture;
+        }
 
         public Builder isByBrowser(){
             this.isByBrowser = true;
