@@ -1,20 +1,19 @@
 package com.imlibo.filepicker.adapter;
 
-import android.media.midi.MidiManager;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.GlideApp;
 
 import java.util.List;
+
 
 /**
  * EssMediaAdapter
@@ -42,7 +41,7 @@ public class EssMediaAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
         GlideApp
                 .with(mContext)
                 .load(item.getUri())
-                .placeholder(R.mipmap.png)
+                .placeholder(FilePicker.getBuilder().getPlaceHolder()==null?mContext.getResources().getDrawable(R.mipmap.png_holder):FilePicker.getBuilder().getPlaceHolder())
                 .override(mImageResize, mImageResize)
                 .centerCrop()
                 .into(imageView);

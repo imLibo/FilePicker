@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.yanzhenjie:permission:2.0.0-rc2'
     implementation 'it.sephiroth.android.library.imagezoom:library:1.0.4'
+    implementation 'jp.wasabeef:glide-transformations:3.1.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

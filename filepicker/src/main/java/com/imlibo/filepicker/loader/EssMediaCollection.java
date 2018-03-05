@@ -26,7 +26,7 @@ import java.util.List;
 
 public class EssMediaCollection implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private static final int LOADER_ID = 3;
+    private static final int LOADER_ID = 2;
     private static final String ARGS_ALBUM = "args_album";
     private static final String ARGS_ENABLE_CAPTURE = "args_enable_capture";
     private static final String ARGS_ONLY_SHOWIMAGE = "ARGS_ONLY_SHOWIMAGE";

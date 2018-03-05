@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         new FilePicker.Builder(this)
                 .isByScan()
                 .setMaxCount(10)
-                .setFileTypes("png", "doc")
+                .setFileTypes("png", "doc","apk", "mp3", "gif", "txt", "mp4", "zip")
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .build();
     }

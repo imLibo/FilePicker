@@ -110,6 +110,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     protected void onDestroy() {
         super.onDestroy();
         mAlbumCollection.onDestroy();
+        mMediaCollection.onDestroy();
     }
 
     @Override

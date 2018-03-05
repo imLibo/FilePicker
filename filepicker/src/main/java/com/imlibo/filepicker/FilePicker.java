@@ -2,6 +2,7 @@ package com.imlibo.filepicker;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
@@ -92,6 +93,7 @@ public class FilePicker {
         private boolean onlyShowImages = false;
         private boolean onlyShowVideos = false;
         private boolean enabledCapture = true;
+        private Drawable placeHolder;
 
         public Builder(Activity activity) {
             this(activity,null);
@@ -141,6 +143,15 @@ public class FilePicker {
         public Builder onlyShowVideos(){
             this.onlyShowVideos = true;
             return this;
+        }
+
+        public Builder placeHolder(Drawable placeHolder){
+            this.placeHolder = placeHolder;
+            return this;
+        }
+
+        public Drawable getPlaceHolder(){
+            return this.placeHolder;
         }
 
         public Builder enabledCapture(boolean enabledCapture){

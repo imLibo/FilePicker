@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.FragmentPagerAdapter;
+import com.imlibo.filepicker.loader.EssMimeTypeCollection;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileScanActEvent;
 import com.imlibo.filepicker.model.FileScanFragEvent;
@@ -64,6 +65,9 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
         mIsSingle = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_SINGLE, false);
         mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
+
+
+
         initUi();
         initData();
     }
@@ -90,9 +94,8 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         List<Fragment> fragmentList = new ArrayList<>();
-        for (String fileType :
-                mFileTypes) {
-            fragmentList.add(FileTypeListFragment.newInstance(fileType, mIsSingle, mMaxCount, mSortType));
+        for (int i = 0; i < mFileTypes.length; i++) {
+            fragmentList.add(FileTypeListFragment.newInstance(mFileTypes[i], mIsSingle, mMaxCount, mSortType, EssMimeTypeCollection.LOADER_ID+i));
         }
         FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager(), fragmentList, Arrays.asList(mFileTypes));
         mViewPager.setAdapter(adapter);
@@ -178,7 +181,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
                                     mSortType = FileUtils.BY_SIZE_DESC;
                                     break;
                             }
-                            EventBus.getDefault().post(new FileScanSortChangedEvent(mSortType));
+                            EventBus.getDefault().post(new FileScanSortChangedEvent(mSortType,mViewPager.getCurrentItem()));
                         }
                     })
                     .setPositiveButton("升序", new DialogInterface.OnClickListener() {
@@ -195,7 +198,7 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
                                     mSortType = FileUtils.BY_SIZE_ASC;
                                     break;
                             }
-                            EventBus.getDefault().post(new FileScanSortChangedEvent(mSortType));
+                            EventBus.getDefault().post(new FileScanSortChangedEvent(mSortType,mViewPager.getCurrentItem()));
                         }
                     })
                     .setTitle("请选择")
