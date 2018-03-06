@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.imlibo.filepicker.activity.SelectFileByBrowserActivity;
 import com.imlibo.filepicker.activity.SelectFileByScanActivity;
 import com.imlibo.filepicker.activity.SelectPictureActivity;
 import com.imlibo.filepicker.util.Const;
 import com.imlibo.filepicker.util.DialogUtil;
+import com.imlibo.filepicker.util.FileUtils;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
@@ -43,10 +45,6 @@ public class FilePicker {
                     public void onAction(List<String> permissions) {
                         //接受权限
                         Intent intent = new Intent();
-                        intent.putExtra(Const.EXTRA_KEY_FILE_TYPE, builder.mFileTypes);
-                        intent.putExtra(Const.EXTRA_KEY_SORT_TYPE, builder.mSortType);
-                        intent.putExtra(Const.EXTRA_KEY_IS_SINGLE, builder.isSingle);
-                        intent.putExtra(Const.EXTRA_KEY_MAX_COUNT, builder.maxCount);
                         if(builder.isByBrowser){
                             intent.setClass(activity,SelectFileByBrowserActivity.class);
                         }else if(builder.isByScan){
@@ -106,6 +104,32 @@ public class FilePicker {
         public Builder(Activity mContext, Fragment mFragment) {
             this.mContext = new WeakReference<>(mContext);
             this.mFragment = new WeakReference<>(mFragment);
+        }
+
+        public boolean isSingleton(){
+            return isSingle;
+        }
+
+        public String[] getFileTypes() {
+            if(mFileTypes == null || mFileTypes.length == 0){
+                return new String[]{"doc","pdf","apk"};
+            }
+            return mFileTypes;
+        }
+
+        public int getSortType() {
+            if(TextUtils.isEmpty(mSortType)){
+                return FileUtils.BY_NAME_ASC;
+            }
+            return Integer.valueOf(mSortType);
+        }
+
+        public int getMaxCount() {
+            return maxCount;
+        }
+
+        public int getRequest_code() {
+            return request_code;
         }
 
         public Builder setMaxCount(int maxCount) {

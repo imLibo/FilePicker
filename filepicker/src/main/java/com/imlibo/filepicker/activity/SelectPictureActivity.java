@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -28,7 +30,9 @@ import com.imlibo.filepicker.widget.MediaItemDecoration;
 import com.imlibo.filepicker.widget.ToolbarSpinner;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -64,6 +68,8 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
 
     private final EssAlbumCollection mAlbumCollection = new EssAlbumCollection();
     private final EssMediaCollection mMediaCollection = new EssMediaCollection();
+    private MenuItem mCountMenuItem;
+    private Set<EssFile> mSelectedFileList = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +80,24 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
         mRecyclerView = findViewById(R.id.rcv_file_picture_list);
         mTvSelectedFolder = findViewById(R.id.selected_folder);
 
+        initUI();
+    }
+
+    private void initUI() {
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         Drawable navigationIcon = toolbar.getNavigationIcon();
         TypedArray ta = getTheme().obtainStyledAttributes(new int[]{R.attr.album_element_color});
         int color = ta.getColor(0, 0);
         ta.recycle();
-        navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        if (navigationIcon != null) {
+            navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        }
 
         mBuketAdapter = new BuketAdapter(this,null,false);
         ToolbarSpinner spinner = new ToolbarSpinner(this);
@@ -104,6 +118,14 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
         mRecyclerView.setAdapter(mMediaAdapter);
         mMediaAdapter.bindToRecyclerView(mRecyclerView);
         mMediaAdapter.setOnItemChildClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.media_menu, menu);
+        mCountMenuItem = menu.findItem(R.id.browser_select_count);
+        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
+        return true;
     }
 
     @Override

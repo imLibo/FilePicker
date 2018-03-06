@@ -10,8 +10,12 @@ import android.support.v4.content.CursorLoader;
 import android.webkit.MimeTypeMap;
 
 import com.imlibo.filepicker.model.Album;
+import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.util.Const;
 import com.imlibo.filepicker.util.FileUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 按照文件类型查找
@@ -29,6 +33,8 @@ public class EssMimeTypeLoader extends CursorLoader {
             MediaStore.Images.Media.DATE_ADDED,
             MediaStore.Files.FileColumns.TITLE,
             MediaStore.Files.FileColumns.DATE_MODIFIED};
+
+    private List<EssFile> essFileList;
 
     public EssMimeTypeLoader(Context context, String selection, String[] selectionArgs, String sortOrder) {
         //默认按照创建时间降序排列
@@ -79,8 +85,20 @@ public class EssMimeTypeLoader extends CursorLoader {
         return new EssMimeTypeLoader(context, selection, selectionArgs, sortOrder);
     }
 
+    public List<EssFile> getEssFileList() {
+        return essFileList;
+    }
+
     @Override
     public Cursor loadInBackground() {
+        Cursor data = super.loadInBackground();
+        essFileList = new ArrayList<>();
+        if (data != null) {
+            while (data.moveToNext()){
+                EssFile essFile = new EssFile(data.getString(data.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)));
+                essFileList.add(essFile);
+            }
+        }
         return super.loadInBackground();
     }
 

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_select_pictures)
-    public void onSelectPitures(View view){
+    public void onSelectPictures(View view){
         new FilePicker.Builder(this)
                 .isSelectMedia()
                 .enabledCapture(true)

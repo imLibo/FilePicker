@@ -61,14 +61,7 @@ public class EssMimeTypeCollection implements LoaderManager.LoaderCallbacks<Curs
         if (context == null) {
             return;
         }
-
-        List<EssFile> essFileList = new ArrayList<>();
-        while (data.moveToNext()){
-            EssFile essFile = new EssFile(data.getString(data.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)));
-            essFileList.add(essFile);
-        }
-
-        mCallbacks.onFileLoad(essFileList);
+        mCallbacks.onFileLoad(((EssMimeTypeLoader)loader).getEssFileList());
     }
 
     @Override

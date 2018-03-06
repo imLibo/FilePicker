@@ -19,15 +19,16 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.SelectFileByBrowserEvent;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
-import com.imlibo.filepicker.loader.EssFileCountTask;
+import com.imlibo.filepicker.task.EssFileCountTask;
 import com.imlibo.filepicker.model.EssFileCountCallBack;
 import com.imlibo.filepicker.model.EssFileListCallBack;
-import com.imlibo.filepicker.loader.EssFileListTask;
+import com.imlibo.filepicker.task.EssFileListTask;
 import com.imlibo.filepicker.model.BreadModel;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.FileEvent;
@@ -40,8 +41,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 文件浏览界面
@@ -91,10 +90,10 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file);
         EventBus.getDefault().register(this);
-        mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
-        mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
-        mIsSingle = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_SINGLE, false);
-        mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
+        mFileTypes = FilePicker.getBuilder().getFileTypes();
+        mSortType = FilePicker.getBuilder().getSortType();
+        mIsSingle = FilePicker.getBuilder().isSingleton();
+        mMaxCount = FilePicker.getBuilder().getMaxCount();
 
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {

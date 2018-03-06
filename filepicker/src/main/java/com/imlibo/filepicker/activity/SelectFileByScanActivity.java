@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.FragmentPagerAdapter;
 import com.imlibo.filepicker.loader.EssMimeTypeCollection;
@@ -61,12 +62,11 @@ public class SelectFileByScanActivity extends AppCompatActivity implements ViewP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file_by_scan);
         EventBus.getDefault().register(this);
-        mFileTypes = getIntent().getStringArrayExtra(Const.EXTRA_KEY_FILE_TYPE);
-        mSortType = getIntent().getIntExtra(Const.EXTRA_KEY_SORT_TYPE, FileUtils.BY_NAME_ASC);
-        mIsSingle = getIntent().getBooleanExtra(Const.EXTRA_KEY_IS_SINGLE, false);
-        mMaxCount = getIntent().getIntExtra(Const.EXTRA_KEY_MAX_COUNT, 10);
 
-
+        mFileTypes = FilePicker.getBuilder().getFileTypes();
+        mSortType = FilePicker.getBuilder().getSortType();
+        mIsSingle = FilePicker.getBuilder().isSingleton();
+        mMaxCount = FilePicker.getBuilder().getMaxCount();
 
         initUi();
         initData();
