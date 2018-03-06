@@ -2,6 +2,7 @@ package com.imlibo.filepicker.activity;
 
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.imlibo.filepicker.BaseFileFragment;
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.loader.EssMimeTypeCollection;
@@ -159,6 +161,7 @@ public class FileTypeListFragment extends BaseFileFragment implements BaseQuickA
         } else {
             if (mMaxCount <= 0) {
                 //超出最大可选择数量后
+                Snackbar.make(mRecyclerView, "您最多只能选择" + FilePicker.getBuilder().getMaxCount() + "个。", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             mSelectedFileList.add(item);
@@ -190,6 +193,7 @@ public class FileTypeListFragment extends BaseFileFragment implements BaseQuickA
 
     @Override
     public void onFileLoad(List<EssFile> essFileList) {
+        Log.i("TAG","size --> "+essFileList.size());
         mAdapter.setNewData(essFileList);
         mRecyclerView.scrollToPosition(0);
         if (essFileList.isEmpty()) {

@@ -3,6 +3,7 @@ package com.imlibo.filepicker.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -277,6 +278,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                 } else {
                     if (mSelectedFileList.size() >= mMaxCount) {
                         //超出最大可选择数量后
+                        Snackbar.make(mRecyclerView, "您最多只能选择" + mMaxCount + "个。", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
                     mSelectedFileList.add(item);

@@ -1,6 +1,7 @@
 package com.imlibo.filepicker.model;
 
 import android.content.ContentUris;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,9 +12,9 @@ import com.imlibo.filepicker.util.MimeType;
 import com.imlibo.filepicker.util.PathUtils;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * EssFile
@@ -21,6 +22,9 @@ import java.util.List;
  */
 
 public class EssFile implements Parcelable {
+
+    public static final int CAPTURE = 0;
+    public static final int MEDIA = 1;
 
     private String mFilePath;
     private String mimeType;
@@ -33,6 +37,8 @@ public class EssFile implements Parcelable {
     private String mFileName;
     private Uri uri;
 
+    private int itemType = MEDIA;
+
     protected EssFile(Parcel in) {
         mFilePath = in.readString();
         mimeType = in.readString();
@@ -43,6 +49,8 @@ public class EssFile implements Parcelable {
         isDirectory = in.readByte() != 0;
         isFile = in.readByte() != 0;
         mFileName = in.readString();
+        uri = in.readParcelable(Uri.class.getClassLoader());
+        itemType = in.readInt();
     }
 
     public static final Creator<EssFile> CREATOR = new Creator<EssFile>() {
@@ -65,10 +73,10 @@ public class EssFile implements Parcelable {
         isChecked = checked;
     }
 
-    public EssFile(String path){
+    public EssFile(String path) {
         mFilePath = path;
         File file = new File(mFilePath);
-        if(file.exists()){
+        if (file.exists()) {
             isExits = true;
             isDirectory = file.isDirectory();
             isFile = file.isFile();
@@ -79,7 +87,7 @@ public class EssFile implements Parcelable {
 
     public EssFile(File file) {
         mFilePath = file.getAbsolutePath();
-        if(file.exists()){
+        if (file.exists()) {
             isExits = true;
             isDirectory = file.isDirectory();
             isFile = file.isFile();
@@ -87,7 +95,7 @@ public class EssFile implements Parcelable {
         mimeType = FileUtils.getMimeType(file.getAbsolutePath());
     }
 
-    public EssFile(long id , String mimeType){
+    public EssFile(long id, String mimeType) {
         this.mimeType = mimeType;
         Uri contentUri;
         if (isImage()) {
@@ -168,29 +176,24 @@ public class EssFile implements Parcelable {
         return essFileList;
     }
 
+    public static ArrayList<EssFile> getEssFileList(Context context, Set<EssFile> essFileSet) {
+        ArrayList<EssFile> essFileArrayList = new ArrayList<>();
+        for (EssFile ess_file :
+                essFileSet) {
+            ess_file.mFilePath = PathUtils.getPath(context, ess_file.uri);
+            essFileArrayList.add(ess_file);
+        }
+        return essFileArrayList;
+    }
+
+
     @Override
     public String toString() {
         return "EssFile{" +
-                "mFilePath=" + mFileName +
+                "mFilePath='" + mFilePath + '\'' +
+                ", mimeType='" + mimeType + '\'' +
+                ", mFileName='" + mFileName + '\'' +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mFilePath);
-        dest.writeString(mimeType);
-        dest.writeString(childFolderCount);
-        dest.writeString(childFileCount);
-        dest.writeByte((byte) (isChecked ? 1 : 0));
-        dest.writeByte((byte) (isExits ? 1 : 0));
-        dest.writeByte((byte) (isDirectory ? 1 : 0));
-        dest.writeByte((byte) (isFile ? 1 : 0));
-        dest.writeString(mFileName);
     }
 
     public boolean isImage() {
@@ -218,5 +221,55 @@ public class EssFile implements Parcelable {
                 || mimeType.equals(MimeType.WEBM.toString())
                 || mimeType.equals(MimeType.TS.toString())
                 || mimeType.equals(MimeType.AVI.toString());
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public int getItemType() {
+        return itemType;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mFilePath);
+        dest.writeString(mimeType);
+        dest.writeString(childFolderCount);
+        dest.writeString(childFileCount);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeByte((byte) (isExits ? 1 : 0));
+        dest.writeByte((byte) (isDirectory ? 1 : 0));
+        dest.writeByte((byte) (isFile ? 1 : 0));
+        dest.writeString(mFileName);
+        dest.writeParcelable(uri, flags);
+        dest.writeInt(itemType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EssFile)) {
+            return false;
+        }
+
+        EssFile other = (EssFile) obj;
+        if (uri == null) {
+            return mFilePath.equalsIgnoreCase(other.getAbsolutePath());
+        } else {
+            return uri.equals(other.getUri());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mFilePath != null ? mFilePath.hashCode() : 0;
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + itemType;
+        return result;
     }
 }

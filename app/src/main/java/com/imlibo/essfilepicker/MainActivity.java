@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.util.Const;
+import com.imlibo.filepicker.util.MimeType;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         new FilePicker.Builder(this)
                 .isByScan()
                 .setMaxCount(10)
+//                .choose(MimeType.ofImage(),MimeType.ofVideo())
                 .setFileTypes("png", "doc","apk", "mp3", "gif", "txt", "mp4", "zip")
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .build();
@@ -47,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     public void onSelectPictures(View view){
         new FilePicker.Builder(this)
                 .isSelectMedia()
-                .enabledCapture(true)
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .build();
     }

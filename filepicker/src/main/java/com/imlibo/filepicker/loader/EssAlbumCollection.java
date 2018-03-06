@@ -39,7 +39,8 @@ public class EssAlbumCollection implements LoaderManager.LoaderCallbacks<Cursor>
             return null;
         }
 
-        return EssAlbumLoader.newInstance(context, false);
+
+        return EssAlbumLoader.newInstance(context);
     }
 
     @Override

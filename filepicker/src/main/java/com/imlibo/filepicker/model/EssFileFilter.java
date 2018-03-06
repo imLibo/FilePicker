@@ -10,6 +10,7 @@ import java.io.FileFilter;
 
 /**
  * EssFileFilter
+ * 不显示隐藏文件、文件夹
  */
 public class EssFileFilter implements FileFilter {
     private String[] mTypes;
@@ -20,12 +21,12 @@ public class EssFileFilter implements FileFilter {
 
     @Override
     public boolean accept(File file) {
-        if (file.isDirectory()) {
+        if (file.isDirectory() && !file.isHidden()) {
             return true;
         }
         if (mTypes != null && mTypes.length > 0) {
             for (String mType : mTypes) {
-                if (file.getName().endsWith(mType.toLowerCase()) || file.getName().endsWith(mType.toUpperCase())) {
+                if ((file.getName().endsWith(mType.toLowerCase()) || file.getName().endsWith(mType.toUpperCase())) && !file.isHidden()) {
 //                if (FileUtils.getMimeType(file.getAbsolutePath()).equalsIgnoreCase(MimeTypeMap.getSingleton().getMimeTypeFromExtension(mType))) {
                     return true;
                 }

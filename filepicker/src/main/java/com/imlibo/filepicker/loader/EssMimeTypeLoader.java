@@ -63,10 +63,15 @@ public class EssMimeTypeLoader extends CursorLoader {
         if (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg")) {
             selection = MediaStore.Files.FileColumns.MIME_TYPE + " in(?,?,?) ";
             selectionArgs = new String[]{Const.mimeTypeMap.get("png"), Const.mimeTypeMap.get("jpg"), Const.mimeTypeMap.get("jpeg")};
+            //不扫描有.nomedia文件的文件夹下的多媒体文件，带有.nomedia文件的文件夹下的多媒体文件的media_type都被置为了0
+            selection = selection + " and " + MediaStore.Files.FileColumns.MEDIA_TYPE + " != " + MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
         }
         if (extension.equalsIgnoreCase("apk")) {
             selection = MediaStore.Files.FileColumns.DATA + " LIKE '%.apk' ";
         }
+
+        selection = selection + " and " + MediaStore.Files.FileColumns.SIZE + " >0 " ;
+
 
         String sortOrder = MediaStore.Files.FileColumns.DATE_ADDED + " DESC ";
         if (mSortType == FileUtils.BY_NAME_ASC) {
@@ -96,7 +101,9 @@ public class EssMimeTypeLoader extends CursorLoader {
         if (data != null) {
             while (data.moveToNext()){
                 EssFile essFile = new EssFile(data.getString(data.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)));
-                essFileList.add(essFile);
+                if(essFile.isExits()){
+                    essFileList.add(essFile);
+                }
             }
         }
         return super.loadInBackground();

@@ -18,40 +18,72 @@
     android:layout_height="wrap_content"
     >
 
-    <ImageView
-        android:id="@+id/media_thumbnail"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/media"
+        >
+        <ImageView
+            android:id="@+id/media_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/check_view"
+            android:theme="@style/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top|right" />
+
+        <ImageView
+            android:id="@+id/gif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_gif"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/video_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/capture"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        />
+        android:background="#EAEEF4"
+        android:foreground="?android:selectableItemBackground"
+        >
 
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/check_view"
-        android:theme="@style/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="top|right" />
+        <TextView
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/ic_photo_camera_white_24dp"
+            android:gravity="center"
+            android:text="拍一张"
+            android:textSize="14sp"
+            />
 
-    <ImageView
-        android:id="@+id/gif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/ic_gif"
-        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/video_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+    </FrameLayout>
+
+
 </FrameLayout>

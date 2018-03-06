@@ -1,9 +1,11 @@
 package com.imlibo.filepicker.activity;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.adapter.BuketAdapter;
 import com.imlibo.filepicker.adapter.EssMediaAdapter;
@@ -24,13 +27,14 @@ import com.imlibo.filepicker.loader.EssAlbumCollection;
 import com.imlibo.filepicker.loader.EssMediaCollection;
 import com.imlibo.filepicker.model.Album;
 import com.imlibo.filepicker.model.EssFile;
+import com.imlibo.filepicker.util.Const;
 import com.imlibo.filepicker.util.FileUtils;
 import com.imlibo.filepicker.util.UiUtils;
 import com.imlibo.filepicker.widget.MediaItemDecoration;
 import com.imlibo.filepicker.widget.ToolbarSpinner;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +42,7 @@ import java.util.Set;
 /**
  * 选择图片界面
  */
-public class SelectPictureActivity extends AppCompatActivity implements EssAlbumCollection.EssAlbumCallbacks, AdapterView.OnItemSelectedListener, EssMediaCollection.EssMediaCallbacks, BaseQuickAdapter.OnItemChildClickListener {
+public class SelectPictureActivity extends AppCompatActivity implements EssAlbumCollection.EssAlbumCallbacks, AdapterView.OnItemSelectedListener, EssMediaCollection.EssMediaCallbacks, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener {
 
     /*1. 只展示指定文件名后缀的文件*/
     private String[] mFileTypes;
@@ -47,7 +51,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     /*3. 是否是多选，默认否*/
     private boolean mIsMultiSelect = true;
     /*4. 最多可选择个数，默认10*/
-    private int mMaxCount;
+    private int mMaxCount = 10;
     /*5. 是否需要压缩，默认返回压缩之后的图片*/
     private boolean mNeedCompress = true;
     /*6. 是否需要裁剪/旋转等，默认不裁剪*/
@@ -69,7 +73,8 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     private final EssAlbumCollection mAlbumCollection = new EssAlbumCollection();
     private final EssMediaCollection mMediaCollection = new EssMediaCollection();
     private MenuItem mCountMenuItem;
-    private Set<EssFile> mSelectedFileList = new HashSet<>();
+    private Set<EssFile> mSelectedFileList = new LinkedHashSet<>();
+    private FilePicker.Builder mParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,18 +84,25 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
 //        EventBus.getDefault().register(this);
         mRecyclerView = findViewById(R.id.rcv_file_picture_list);
         mTvSelectedFolder = findViewById(R.id.selected_folder);
+        mParams = FilePicker.getBuilder();
 
         initUI();
     }
 
     private void initUI() {
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Drawable navigationIcon = toolbar.getNavigationIcon();
         TypedArray ta = getTheme().obtainStyledAttributes(new int[]{R.attr.album_element_color});
         int color = ta.getColor(0, 0);
@@ -99,25 +111,28 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
             navigationIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         }
 
-        mBuketAdapter = new BuketAdapter(this,null,false);
+        mBuketAdapter = new BuketAdapter(this, null, false);
         ToolbarSpinner spinner = new ToolbarSpinner(this);
         spinner.setSelectedTextView((TextView) findViewById(R.id.selected_folder));
         spinner.setPopupAnchorView(findViewById(R.id.toolbar));
         spinner.setOnItemSelectedListener(this);
         spinner.setAdapter(mBuketAdapter);
 
-        mAlbumCollection.onCreate(this,this);
+        mAlbumCollection.onCreate(this, this);
         mAlbumCollection.load();
-
-        mMediaCollection.onCreate(this,this);
+        mMediaCollection.onCreate(this, this);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.addItemDecoration(new MediaItemDecoration());
         mMediaAdapter = new EssMediaAdapter(new ArrayList<EssFile>());
-        mMediaAdapter.setmImageResize(UiUtils.getImageResize(this,mRecyclerView));
+        mMediaAdapter.setmImageResize(UiUtils.getImageResize(this, mRecyclerView));
         mRecyclerView.setAdapter(mMediaAdapter);
         mMediaAdapter.bindToRecyclerView(mRecyclerView);
         mMediaAdapter.setOnItemChildClickListener(this);
+        if (mParams.isSingleton() || mParams.getMaxCount() == 1) {
+            //单选
+            mMediaAdapter.setOnItemClickListener(this);
+        }
     }
 
     @Override
@@ -138,6 +153,9 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     @Override
     public void onAlbumMediaLoad(Cursor cursor) {
         mBuketAdapter.swapCursor(cursor);
+        cursor.moveToFirst();
+        Album album = Album.valueOf(cursor);
+        mMediaCollection.load(album, mNeedCamera,mSelectedFileList);
     }
 
     @Override
@@ -149,7 +167,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mBuketAdapter.getCursor().moveToPosition(position);
         Album album = Album.valueOf(mBuketAdapter.getCursor());
-        mMediaCollection.load(album,mNeedCamera);
+        mMediaCollection.load(album, mNeedCamera,mSelectedFileList);
     }
 
     @Override
@@ -160,7 +178,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     @Override
     public void onMediaLoad(List<EssFile> essFileList) {
         mMediaAdapter.setNewData(essFileList);
-        if(essFileList == null || essFileList.isEmpty()){
+        if (essFileList == null || essFileList.isEmpty()) {
             mMediaAdapter.setEmptyView(R.layout.empty_file_list);
         }
     }
@@ -172,13 +190,60 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        if(adapter.equals(mMediaAdapter)){
-            if(view.getId() == R.id.check_view){
-                mMediaAdapter.getData().get(position).setChecked(!mMediaAdapter.getData().get(position).isChecked());
-                mMediaAdapter.notifyItemChanged(position,"");
-            }else if(view.getId() == R.id.media_thumbnail){
-
-            }
+        EssFile item = mMediaAdapter.getItem(position);
+        if (!adapter.equals(mMediaAdapter)) {
+            return;
         }
+        if (view.getId() == R.id.check_view) {
+            if(mSelectedFileList.size() >= mParams.getMaxCount() && !item.isChecked()){
+                mMediaAdapter.notifyItemChanged(position, "");
+                Snackbar.make(mRecyclerView, "您最多只能选择" + mParams.getMaxCount() + "个。", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            boolean addSuccess = mSelectedFileList.add(mMediaAdapter.getItem(position));
+            if(addSuccess){
+                mMediaAdapter.getData().get(position).setChecked(true);
+            }else {
+                //已经有了就删掉
+                mSelectedFileList.remove(item);
+                mMediaAdapter.getData().get(position).setChecked(false);
+            }
+            mMediaAdapter.notifyItemChanged(position, "");
+            mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
+        } else if (view.getId() == R.id.media_thumbnail) {
+            //预览
+
+        } else if (view.getId() == R.id.capture) {
+            //照相
+
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.browser_select_count) {
+            //选中
+            if (mSelectedFileList.isEmpty()) {
+                return true;
+            }
+            //不为空
+            Intent result = new Intent();
+            result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(this, mSelectedFileList));
+            setResult(RESULT_OK, result);
+            super.onBackPressed();
+        }
+        return true;
+    }
+
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        //单选
+        mSelectedFileList.add(mMediaAdapter.getData().get(position));
+        Intent result = new Intent();
+        result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(this, mSelectedFileList));
+        setResult(RESULT_OK, result);
+        super.onBackPressed();
     }
 }

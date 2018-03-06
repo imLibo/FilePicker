@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 
+import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.model.Album;
 
 /**
@@ -62,13 +63,13 @@ public class EssAlbumLoader extends CursorLoader {
         super(context, QUERY_URI, PROJECTION, selection, selectionArgs, BUCKET_ORDER_BY);
     }
 
-    public static CursorLoader newInstance(Context context, boolean onlyShowImages) {
+    public static CursorLoader newInstance(Context context) {
         String selection;
         String[] selectionArgs;
-        if (onlyShowImages) {
+        if (FilePicker.getBuilder().isOnlyShowImages()) {
             selection = SELECTION_FOR_SINGLE_MEDIA_TYPE;
             selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-        } else if (onlyShowImages) {
+        } else if (FilePicker.getBuilder().isOnlyShowVideos()) {
             selection = SELECTION_FOR_SINGLE_MEDIA_TYPE;
             selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
         } else {
@@ -94,6 +95,8 @@ public class EssAlbumLoader extends CursorLoader {
         }
         allAlbum.addRow(new String[]{Album.ALBUM_ID_ALL, Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, allAlbumCoverPath,
                 String.valueOf(totalCount)});
+
+
 
         return new MergeCursor(new Cursor[]{allAlbum, albums});
     }

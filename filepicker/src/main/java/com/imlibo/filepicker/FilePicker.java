@@ -13,12 +13,14 @@ import com.imlibo.filepicker.activity.SelectPictureActivity;
 import com.imlibo.filepicker.util.Const;
 import com.imlibo.filepicker.util.DialogUtil;
 import com.imlibo.filepicker.util.FileUtils;
+import com.imlibo.filepicker.util.MimeType;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -68,7 +70,6 @@ public class FilePicker {
                     }
                 })
                 .start();
-
     }
 
     public static Builder getBuilder() {
@@ -90,8 +91,9 @@ public class FilePicker {
         private int request_code;
         private boolean onlyShowImages = false;
         private boolean onlyShowVideos = false;
-        private boolean enabledCapture = true;
+        private boolean enabledCapture = false;
         private Drawable placeHolder;
+        private Set<MimeType> mimeTypeSet;
 
         public Builder(Activity activity) {
             this(activity,null);
@@ -104,6 +106,11 @@ public class FilePicker {
         public Builder(Activity mContext, Fragment mFragment) {
             this.mContext = new WeakReference<>(mContext);
             this.mFragment = new WeakReference<>(mFragment);
+        }
+
+        public Builder choose(Set<MimeType> mimeTypes){
+            this.mimeTypeSet = mimeTypes;
+            return this;
         }
 
         public boolean isSingleton(){
