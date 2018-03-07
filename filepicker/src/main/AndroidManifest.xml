@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.imlibo.filepicker">
+    package="com.ess.filepicker">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
-        <activity android:name=".activity.SelectFileByBrowserActivity" />
-        <activity android:name=".activity.SelectPictureActivity" />
-        <activity android:name=".activity.SelectFileByScanActivity" />
+        <activity android:name="com.ess.filepicker.activity.SelectFileByBrowserActivity" />
+        <activity android:name="com.ess.filepicker.activity.SelectPictureActivity" />
+        <activity android:name="com.ess.filepicker.activity.SelectFileByScanActivity" />
 
         <provider
-            android:name=".model.EssFileProvider"
+            android:name="com.ess.filepicker.model.EssFileProvider"
             android:authorities="${applicationId}.ess.file.provider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -20,7 +20,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".activity.PicturesViewActivity"/>
+        <activity android:name="com.ess.filepicker.activity.PicturesViewActivity"/>
     </application>
 
 </manifest>

@@ -2,7 +2,7 @@
 <resources>
 
     <style name="checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:colorControlNormal">@color/zhihu_album_dropdown_count_text</item>
-        <item name="android:colorControlActivated">@color/zhihu_primary</item>
+        <item name="android:colorControlNormal">@color/elec_album_dropdown_count_text</item>
+        <item name="android:colorControlActivated">@color/elec_primary</item>
     </style>
 </resources>
