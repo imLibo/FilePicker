@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.util.Const;
-import com.imlibo.filepicker.util.MimeType;
 
 import java.util.ArrayList;
 
@@ -26,31 +25,32 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_browse)
     public void onBrowse(View view) {
-        new FilePicker.Builder(this)
-                .isByBrowser()
+        FilePicker.from(this)
+                .chooseForBrowser()
                 .setMaxCount(2)
-                .setFileTypes("doc", "apk", "mp3", "gif", "txt", "mp4", "zip", "ppt", "exe", "png", "jpg", "jpeg")
                 .requestCode(REQUEST_CODE_CHOOSE)
-                .build();
+                .start();
     }
 
     @OnClick(R.id.button_scan)
     public void onScan(View view) {
-        new FilePicker.Builder(this)
-                .isByScan()
+        FilePicker
+                .from(this)
+                .chooseForMimeType()
                 .setMaxCount(10)
-//                .choose(MimeType.ofImage(),MimeType.ofVideo())
                 .setFileTypes("png", "doc","apk", "mp3", "gif", "txt", "mp4", "zip")
                 .requestCode(REQUEST_CODE_CHOOSE)
-                .build();
+                .start();
     }
 
     @OnClick(R.id.button_select_pictures)
     public void onSelectPictures(View view){
-        new FilePicker.Builder(this)
-                .isSelectMedia()
+        FilePicker
+                .from(this)
+                .chooseMedia()
+                .enabledCapture(true)
                 .requestCode(REQUEST_CODE_CHOOSE)
-                .build();
+                .start();
     }
 
 

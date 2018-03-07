@@ -23,6 +23,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
 import com.imlibo.filepicker.SelectFileByBrowserEvent;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.adapter.BreadAdapter;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.adapter.SelectSdcardAdapter;
@@ -51,14 +52,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener,
         View.OnClickListener, EssFileListCallBack, EssFileCountCallBack {
 
-    /*只展示指定文件名后缀的文件*/
-    private String[] mFileTypes;
-    /*文件列表排序类型，默认按文件名升序排列*/
-    private int mSortType = FileUtils.BY_NAME_ASC;
-    /*是否是单选，默认否*/
-    private boolean mIsSingle = false;
-    /*最多可选择个数*/
-    private int mMaxCount = 10;
     /*todo 是否可预览文件，默认可预览*/
     private boolean mCanPreview = true;
 
@@ -91,10 +84,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file);
         EventBus.getDefault().register(this);
-        mFileTypes = FilePicker.getBuilder().getFileTypes();
-        mSortType = FilePicker.getBuilder().getSortType();
-        mIsSingle = FilePicker.getBuilder().isSingleton();
-        mMaxCount = FilePicker.getBuilder().getMaxCount();
 
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {
@@ -108,7 +97,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.browse_menu, menu);
         mCountMenuItem = menu.findItem(R.id.browser_select_count);
-        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
+        mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(SelectOptions.getInstance().maxCount)));
         return true;
     }
 
@@ -147,7 +136,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     }
 
     private void initData() {
-        executeListTask(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
+        executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
     }
 
     private void executeListTask(List<EssFile> essFileList, String queryPath, String[] types, int sortType) {
@@ -217,7 +206,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             public void onItemClick(BaseQuickAdapter adapterIn, View view, int position) {
                 mSelectSdCardWindow.dismiss();
                 mHasChangeSdCard = true;
-                executeListTask(mSelectedFileList, FileUtils.getChangeSdCard(adapter.getData().get(position), mSdCardList), mFileTypes, mSortType);
+                executeListTask(mSelectedFileList, FileUtils.getChangeSdCard(adapter.getData().get(position), mSdCardList), SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
             }
         });
         mSelectSdCardWindow.showAsDropDown(mImbSelectSdCard);
@@ -241,7 +230,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
      */
     @Subscribe
     public void findChildCounts(FileEvent event) {
-        essFileCountTask = new EssFileCountTask(event.getPosition(), mAdapter.getData().get(event.getPosition()).getAbsolutePath(), mFileTypes, this);
+        essFileCountTask = new EssFileCountTask(event.getPosition(), mAdapter.getData().get(event.getPosition()).getAbsolutePath(), SelectOptions.getInstance().getFileTypes(), this);
         essFileCountTask.execute();
     }
 
@@ -260,10 +249,10 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                 //点击文件夹
                 //保存当前的垂直滚动位置
                 mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(mRecyclerView.computeVerticalScrollOffset());
-                executeListTask(mSelectedFileList, mCurFolder + item.getName() + File.separator, mFileTypes, mSortType);
+                executeListTask(mSelectedFileList, mCurFolder + item.getName() + File.separator, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
             } else {
                 //选中某文件后，判断是否单选
-                if (mIsSingle) {
+                if (SelectOptions.getInstance().isSingle) {
                     Intent result = new Intent();
                     result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);
                     setResult(RESULT_OK, result);
@@ -276,16 +265,16 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                         mSelectedFileList.remove(index);
                     }
                 } else {
-                    if (mSelectedFileList.size() >= mMaxCount) {
+                    if (mSelectedFileList.size() >= SelectOptions.getInstance().maxCount) {
                         //超出最大可选择数量后
-                        Snackbar.make(mRecyclerView, "您最多只能选择" + mMaxCount + "个。", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(mRecyclerView, "您最多只能选择" + SelectOptions.getInstance().maxCount + "个。", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
                     mSelectedFileList.add(item);
                 }
                 mAdapter.getData().get(position).setChecked(!mAdapter.getData().get(position).isChecked());
                 mAdapter.notifyItemChanged(position, "");
-                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(mMaxCount)));
+                mCountMenuItem.setTitle(String.format(getString(R.string.selected_file_count), String.valueOf(mSelectedFileList.size()), String.valueOf(SelectOptions.getInstance().maxCount)));
             }
         }
     }
@@ -308,7 +297,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             super.onBackPressed();
             return;
         }
-        executeListTask(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, mFileTypes, mSortType);
+        executeListTask(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
     }
 
     @Override
@@ -319,7 +308,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             if (mCurFolder.equals(queryPath)) {
                 return;
             }
-            executeListTask(mSelectedFileList, queryPath, mFileTypes, mSortType);
+            executeListTask(mSelectedFileList, queryPath, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
         }
     }
 
@@ -372,21 +361,21 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
                             switch (mSelectSortTypeIndex) {
                                 case 0:
-                                    mSortType = FileUtils.BY_NAME_DESC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_NAME_DESC);
                                     break;
                                 case 1:
-                                    mSortType = FileUtils.BY_TIME_ASC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_TIME_ASC);
                                     break;
                                 case 2:
-                                    mSortType = FileUtils.BY_SIZE_DESC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_SIZE_DESC);
                                     break;
                                 case 3:
-                                    mSortType = FileUtils.BY_EXTENSION_DESC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_EXTENSION_DESC);
                                     break;
                             }
                             //恢复排序
                             mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
-                            executeListTask(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
+                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
                         }
                     })
                     .setPositiveButton("升序", new DialogInterface.OnClickListener() {
@@ -394,21 +383,21 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which) {
                             switch (mSelectSortTypeIndex) {
                                 case 0:
-                                    mSortType = FileUtils.BY_NAME_ASC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_NAME_ASC);
                                     break;
                                 case 1:
-                                    mSortType = FileUtils.BY_TIME_DESC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_TIME_DESC);
                                     break;
                                 case 2:
-                                    mSortType = FileUtils.BY_SIZE_ASC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_SIZE_ASC);
                                     break;
                                 case 3:
-                                    mSortType = FileUtils.BY_EXTENSION_ASC;
+                                    SelectOptions.getInstance().setSortType(FileUtils.BY_EXTENSION_ASC);
                                     break;
                             }
                             //恢复排序
                             mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
-                            executeListTask(mSelectedFileList, mCurFolder, mFileTypes, mSortType);
+                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
                         }
                     })
                     .setTitle("请选择")

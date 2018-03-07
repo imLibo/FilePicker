@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.model.EssFile;
 import com.imlibo.filepicker.model.GlideApp;
 import com.imlibo.filepicker.util.UiUtils;
@@ -31,7 +32,7 @@ public class EssMediaAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
         super(R.layout.ess_media_item,data);
     }
 
-    public void setmImageResize(int imageSize) {
+    public void setImageResize(int imageSize) {
         this.mImageResize = imageSize;
     }
 
@@ -50,11 +51,11 @@ public class EssMediaAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
             GlideApp
                     .with(mContext)
                     .load(item.getUri())
-                    .placeholder(FilePicker.getBuilder().getPlaceHolder() == null ? mContext.getResources().getDrawable(R.mipmap.png_holder) : FilePicker.getBuilder().getPlaceHolder())
+                    .placeholder(SelectOptions.getInstance().placeHolder == null ? mContext.getResources().getDrawable(R.mipmap.png_holder) : SelectOptions.getInstance().placeHolder)
                     .override(mImageResize, mImageResize)
                     .centerCrop()
                     .into(imageView);
-            if(FilePicker.getBuilder().isSingleton() || FilePicker.getBuilder().getMaxCount() == 1){
+            if(SelectOptions.getInstance().isSingle || SelectOptions.getInstance().maxCount == 1){
                 helper.setVisible(R.id.check_view,false);
             }else {
                 AppCompatCheckBox checkBox = helper.getView(R.id.check_view);

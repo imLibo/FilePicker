@@ -19,8 +19,8 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.adapter.BuketAdapter;
 import com.imlibo.filepicker.adapter.EssMediaAdapter;
 import com.imlibo.filepicker.loader.EssAlbumCollection;
@@ -74,7 +74,6 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     private final EssMediaCollection mMediaCollection = new EssMediaCollection();
     private MenuItem mCountMenuItem;
     private Set<EssFile> mSelectedFileList = new LinkedHashSet<>();
-    private FilePicker.Builder mParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,6 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
 //        EventBus.getDefault().register(this);
         mRecyclerView = findViewById(R.id.rcv_file_picture_list);
         mTvSelectedFolder = findViewById(R.id.selected_folder);
-        mParams = FilePicker.getBuilder();
 
         initUI();
     }
@@ -125,11 +123,11 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.addItemDecoration(new MediaItemDecoration());
         mMediaAdapter = new EssMediaAdapter(new ArrayList<EssFile>());
-        mMediaAdapter.setmImageResize(UiUtils.getImageResize(this, mRecyclerView));
+        mMediaAdapter.setImageResize(UiUtils.getImageResize(this, mRecyclerView));
         mRecyclerView.setAdapter(mMediaAdapter);
         mMediaAdapter.bindToRecyclerView(mRecyclerView);
         mMediaAdapter.setOnItemChildClickListener(this);
-        if (mParams.isSingleton() || mParams.getMaxCount() == 1) {
+        if (SelectOptions.getInstance().isSingle || SelectOptions.getInstance().maxCount == 1) {
             //单选
             mMediaAdapter.setOnItemClickListener(this);
         }
@@ -195,9 +193,9 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
             return;
         }
         if (view.getId() == R.id.check_view) {
-            if(mSelectedFileList.size() >= mParams.getMaxCount() && !item.isChecked()){
+            if(mSelectedFileList.size() >= SelectOptions.getInstance().maxCount && !item.isChecked()){
                 mMediaAdapter.notifyItemChanged(position, "");
-                Snackbar.make(mRecyclerView, "您最多只能选择" + mParams.getMaxCount() + "个。", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mRecyclerView, "您最多只能选择" + SelectOptions.getInstance().maxCount + "个。", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             boolean addSuccess = mSelectedFileList.add(mMediaAdapter.getItem(position));

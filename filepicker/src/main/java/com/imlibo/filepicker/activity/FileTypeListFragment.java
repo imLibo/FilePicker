@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.imlibo.filepicker.BaseFileFragment;
 import com.imlibo.filepicker.FilePicker;
 import com.imlibo.filepicker.R;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.adapter.FileListAdapter;
 import com.imlibo.filepicker.loader.EssMimeTypeCollection;
 import com.imlibo.filepicker.model.EssFile;
@@ -27,9 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FileTypeListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * FileTypeListFragment
  */
 public class FileTypeListFragment extends BaseFileFragment implements BaseQuickAdapter.OnItemClickListener,
         EssMimeTypeCollection.EssMimeTypeCallbacks {
@@ -161,7 +160,7 @@ public class FileTypeListFragment extends BaseFileFragment implements BaseQuickA
         } else {
             if (mMaxCount <= 0) {
                 //超出最大可选择数量后
-                Snackbar.make(mRecyclerView, "您最多只能选择" + FilePicker.getBuilder().getMaxCount() + "个。", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mRecyclerView, "您最多只能选择" + SelectOptions.getInstance().maxCount + "个。", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             mSelectedFileList.add(item);

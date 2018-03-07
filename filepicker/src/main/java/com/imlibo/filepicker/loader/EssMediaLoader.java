@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 
 import com.imlibo.filepicker.FilePicker;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.model.Album;
 import com.imlibo.filepicker.util.MediaStoreCompat;
 
@@ -92,23 +93,23 @@ public class EssMediaLoader extends CursorLoader {
         String[] selectionArgs;
         boolean enableCapture;
         if (album.isAll()) {
-            if (FilePicker.getBuilder().isOnlyShowImages()) {
+            if (SelectOptions.getInstance().onlyShowImages) {
                 selection = SELECTION_ALL_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            } else if (FilePicker.getBuilder().isOnlyShowVideos()) {
+            } else if (SelectOptions.getInstance().onlyShowVideos) {
                 selection = SELECTION_ALL_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
             } else {
                 selection = SELECTION_ALL;
                 selectionArgs = SELECTION_ALL_ARGS;
             }
-            enableCapture = FilePicker.getBuilder().isEnabledCapture();
+            enableCapture = SelectOptions.getInstance().enabledCapture;
         } else {
-            if (FilePicker.getBuilder().isOnlyShowImages()) {
+            if (SelectOptions.getInstance().onlyShowImages) {
                 selection = SELECTION_ALBUM_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs = getSelectionAlbumArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                         album.getId());
-            } else if (FilePicker.getBuilder().isOnlyShowVideos()) {
+            } else if (SelectOptions.getInstance().onlyShowVideos) {
                 selection = SELECTION_ALBUM_FOR_SINGLE_MEDIA_TYPE;
                 selectionArgs = getSelectionAlbumArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
                         album.getId());

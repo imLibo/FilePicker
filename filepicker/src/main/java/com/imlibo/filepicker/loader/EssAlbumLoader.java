@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 
 import com.imlibo.filepicker.FilePicker;
+import com.imlibo.filepicker.SelectOptions;
 import com.imlibo.filepicker.model.Album;
 
 /**
@@ -66,10 +67,10 @@ public class EssAlbumLoader extends CursorLoader {
     public static CursorLoader newInstance(Context context) {
         String selection;
         String[] selectionArgs;
-        if (FilePicker.getBuilder().isOnlyShowImages()) {
+        if (SelectOptions.getInstance().onlyShowImages) {
             selection = SELECTION_FOR_SINGLE_MEDIA_TYPE;
             selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-        } else if (FilePicker.getBuilder().isOnlyShowVideos()) {
+        } else if (SelectOptions.getInstance().onlyShowVideos) {
             selection = SELECTION_FOR_SINGLE_MEDIA_TYPE;
             selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
         } else {
