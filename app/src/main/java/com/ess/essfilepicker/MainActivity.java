@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 .from(this)
                 .chooseMedia()
                 .enabledCapture(true)
-                .setTheme(R.style.Matisse_Dracula)
+//                .setTheme(R.style.Matisse_Dracula)
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .start();
     }
