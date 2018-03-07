@@ -155,7 +155,3 @@ themeId | 主题ID | R.Style.FilePicker_Elec
 
 [AndroidPicker](https://github.com/gzu-liyujiang/AndroidPicker)
 
-### About me
----
-
-[www.imlibo.cn](http://www.imlibo.cn)
