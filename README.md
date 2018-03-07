@@ -11,14 +11,13 @@
 ### Example
 
 ---
-
-![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_20180307-124655.png)  ![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_2018-03-07-13-51.png)  ![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_20180307-124316.png)  
-![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_20180307-124556.png)  ![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_20180307-124202.png)  ![FilePicker](http://172.16.101.254/aj/ess_file_picker/blob/master/screenshot/Screenshot_20180307-124213.png)
+![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124655.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_2018-03-07-13-51.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124316.png)  
+![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124556.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124202.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124213.png)
 
 ---
 
 ### 可下载APK直接体验
-[Demo.apk](http://172.16.101.254/aj/ess_file_picker/blob/master/APK/release/filepicker-demo.apk)
+[Demo.apk](https://github.com/imLibo/FilePicker/blob/master/APK/release/filepicker-demo.apk)
 
 
 ---
