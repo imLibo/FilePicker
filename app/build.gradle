@@ -10,9 +10,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file("../filepicker.jks")
+            storePassword "filepicker"
+            keyAlias "filepicker"
+            keyPassword "filepicker"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,8 +47,11 @@ dependencies {
 
 task copyApk(type: Copy) {
     include '**/*.apk'
-    from '/build/outputs/apk'
+    from '/build/outputs/release/apk'
     into '../APK/'
+    rename { String fileName -> //在复制时重命名文件
+        fileName = "filepicker-demo.apk" // 重命名
+    }
 }
 
 //在task被添加的时候定义依赖关系
