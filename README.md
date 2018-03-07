@@ -1,4 +1,6 @@
-## 介绍
+### 介绍
+
+---
 
 1. 可在文件浏览器中选择指定后缀名文件
 2. 可通过扫描全盘的方式，选择指定后缀名的文件
@@ -6,7 +8,9 @@
 4. 图片选择页面可以自定义主题
 5. 支持Activity、Fragment
 
-## Example
+### Example
+
+---
 
 ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124655.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_2018-03-07-13-51.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124316.png)  
 ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124556.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124202.png)  ![FilePicker](https://github.com/imLibo/FilePicker/blob/master/screenshot/Screenshot_20180307-124213.png)
@@ -14,7 +18,7 @@
 ---
 
 ### 可下载APK直接体验
-++[Demo.apk](https://github.com/imLibo/FilePicker/blob/master/APK/release/filepicker-demo.apk)++
+[Demo.apk](https://github.com/imLibo/FilePicker/blob/master/APK/release/filepicker-demo.apk)
 
 
 ---
@@ -80,6 +84,8 @@ FilePicker
 
 ### 属性列表
 
+---
+
 名称 | 描述 |  默认值
 ---|---|---
 FileTypes | 需要显示的文件类型 | 无
@@ -94,6 +100,8 @@ placeHolder | 图片的PlaceHolder | png_holder
 themeId | 主题ID | R.Style.FilePicker_Elec
 
 ### 自定义主题
+
+---
 
 
 ```
@@ -124,6 +132,8 @@ themeId | 主题ID | R.Style.FilePicker_Elec
 
 ### Feature TODO
 
+---
+
 - [ ] 根据文件类型打开/预览文件
 - [ ] 预览图片界面
 - [ ] 压缩图片
@@ -137,8 +147,15 @@ themeId | 主题ID | R.Style.FilePicker_Elec
 
 ### THANKS
 
+---
+
 [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
 [Matisse](https://github.com/zhihu/Matisse)
 
 [AndroidPicker](https://github.com/gzu-liyujiang/AndroidPicker)
+
+### About me
+---
+
+[www.imlibo.cn](http://www.imlibo.cn)
