@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         FilePicker.from(this)
                 .chooseForBrowser()
                 .setMaxCount(2)
+                .setFileTypes("png", "doc","apk", "mp3", "gif", "txt", "mp4", "zip")
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .start();
     }
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 .from(this)
                 .chooseMedia()
                 .enabledCapture(true)
-//                .setTheme(R.style.Matisse_Dracula)
+                .setTheme(R.style.FilePicker_Dracula)
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .start();
     }

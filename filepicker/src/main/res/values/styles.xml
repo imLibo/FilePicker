@@ -44,7 +44,7 @@
 
 	//===================================== Theme Dracula ==========================================
 
-	<style name="Matisse.Dracula" parent="Theme.AppCompat.NoActionBar">
+	<style name="FilePicker.Dracula" parent="Theme.AppCompat.NoActionBar">
 		<item name="colorPrimary">@color/dracula_primary</item>
 		<item name="colorPrimaryDark">@color/dracula_primary_dark</item>
 		<item name="toolbar">@style/Toolbar.Dracula</item>
