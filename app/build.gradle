@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    compile 'cn.imlibo:FilePicker:v0.0.1_alpha'
+    implementation 'cn.imlibo:FilePicker:v0.0.1_alpha'
 }
 
 
