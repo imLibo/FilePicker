@@ -155,11 +155,14 @@ themeId | 主题ID | R.Style.FilePicker_Elec
 
 ---
 
+[陈宇明大师兄 BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
+
 [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
 [Matisse](https://github.com/zhihu/Matisse)
 
 [AndroidPicker](https://github.com/gzu-liyujiang/AndroidPicker)
+
 
 ## LICENSE
 
