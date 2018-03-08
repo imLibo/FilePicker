@@ -17,7 +17,7 @@
 ---
 
 ### 可下载APK直接体验
-[Demo.apk](https://github.com/imLibo/FilePicker/blob/master/APK/release/filepicker-demo.apk)
+[Demo.apk](https://fir.im/filepicker)
 
 
 ---
