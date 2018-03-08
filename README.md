@@ -29,20 +29,6 @@
 implementation 'cn.imlibo:FilePicker:v0.0.1_alpha'
 ```
 
-> 如果报找不到依赖库的错，在项目的build.gradle添加如下代码：
-
-
-```
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url "https://jitpack.io" }
-        maven { url "https://dl.bintray.com/libo/maven" }
-    }
-}
-```
-
 
 
 ##### 一、 在文件浏览器中选择指定文件
