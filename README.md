@@ -26,7 +26,7 @@
 
 
 ```
-implementation 'cn.imlibo:FilePicker:v0.0.1_alpha'
+implementation 'cn.imlibo:FilePicker:v0.0.2_alpha'
 ```
 
 
