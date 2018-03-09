@@ -22,7 +22,6 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "https://dl.bintray.com/libo/maven" }
     }
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
@@ -38,7 +37,7 @@ ext {
     userOrg = 'libo'
     groupId = 'cn.imlibo'
     uploadName = 'FilePicker'
-    publishVersion = 'v0.0.1_alpha'
+    publishVersion = 'v0.0.2_alpha'
     desc = 'Android文件选择器、图片选择器、MIMEType分类选择器'
     website = 'https://github.com/imLibo/FilePicker'
     licences = ['MIT']

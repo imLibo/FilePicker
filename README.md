@@ -17,7 +17,7 @@
 ---
 
 ### 可下载APK直接体验
-[Demo.apk](https://github.com/imLibo/FilePicker/blob/master/APK/release/filepicker-demo.apk)
+[Demo.apk](https://fir.im/filepicker)
 
 
 ---
@@ -26,21 +26,7 @@
 
 
 ```
-implementation 'cn.imlibo:FilePicker:v0.0.1_alpha'
-```
-
-> 如果报找不到依赖库的错，在项目的build.gradle添加如下代码：
-
-
-```
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url "https://jitpack.io" }
-        maven { url "https://dl.bintray.com/libo/maven" }
-    }
-}
+implementation 'cn.imlibo:FilePicker:v0.0.2_alpha'
 ```
 
 
@@ -169,11 +155,14 @@ themeId | 主题ID | R.Style.FilePicker_Elec
 
 ---
 
+[陈宇明大师兄 BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
+
 [Android-FilePicker](https://github.com/DroidNinja/Android-FilePicker)
 
 [Matisse](https://github.com/zhihu/Matisse)
 
 [AndroidPicker](https://github.com/gzu-liyujiang/AndroidPicker)
+
 
 ## LICENSE
 
