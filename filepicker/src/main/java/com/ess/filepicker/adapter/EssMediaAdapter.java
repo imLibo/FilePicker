@@ -6,12 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.filepicker.R;
 import com.ess.filepicker.SelectOptions;
 import com.ess.filepicker.model.EssFile;
-import com.ess.filepicker.model.GlideApp;
 import com.ess.filepicker.util.UiUtils;
 
 import java.util.List;
@@ -46,12 +47,14 @@ public class EssMediaAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
             helper.getView(R.id.media).setVisibility(View.VISIBLE);
             helper.itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, mImageResize));
             ImageView imageView = helper.getView(R.id.media_thumbnail);
-            GlideApp
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .override(mImageResize, mImageResize)
+                    .placeholder(SelectOptions.getInstance().placeHolder == null ? mContext.getResources().getDrawable(R.mipmap.png_holder) : SelectOptions.getInstance().placeHolder);
+            Glide
                     .with(mContext)
                     .load(item.getUri())
-                    .placeholder(SelectOptions.getInstance().placeHolder == null ? mContext.getResources().getDrawable(R.mipmap.png_holder) : SelectOptions.getInstance().placeHolder)
-                    .override(mImageResize, mImageResize)
-                    .centerCrop()
+                    .apply(options)
                     .into(imageView);
             if(SelectOptions.getInstance().isSingle || SelectOptions.getInstance().maxCount == 1){
                 helper.setVisible(R.id.check_view,false);

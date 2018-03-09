@@ -11,9 +11,11 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.ess.filepicker.R;
+import com.ess.filepicker.SelectOptions;
 import com.ess.filepicker.model.Album;
-import com.ess.filepicker.model.GlideApp;
 
 /**
  * BuketAdapter
@@ -42,12 +44,13 @@ public class BuketAdapter extends CursorAdapter{
         Album album = Album.valueOf(cursor);
         ((TextView) view.findViewById(R.id.album_name)).setText(album.getDisplayName(context));
         ((TextView) view.findViewById(R.id.album_media_count)).setText(String.valueOf(album.getCount()));
-
-        GlideApp
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(mPlaceholder);
+        Glide
                 .with(context)
                 .load(album.getCoverPath())
-                .placeholder(mPlaceholder)
-                .centerCrop()
+                .apply(options)
                 .into((ImageView) view.findViewById(R.id.album_cover));
     }
 }

@@ -4,11 +4,12 @@ import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.filepicker.model.EssFile;
 import com.ess.filepicker.model.FileEvent;
-import com.ess.filepicker.model.GlideApp;
 import com.ess.filepicker.util.FileSizeUtil;
 import com.ess.filepicker.util.FileUtils;
 import com.ess.filepicker.R;
@@ -67,21 +68,25 @@ public class FileListAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
                 imageView.setImageResource(R.mipmap.flv);
                 break;
             case "gif":
-                GlideApp
+                RequestOptions options = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.mipmap.gif);
+                Glide
                         .with(mContext)
                         .load(item.getAbsolutePath())
-                        .placeholder(R.mipmap.gif)
-                        .centerCrop()
+                        .apply(options)
                         .into(imageView);
                 break;
             case "jpg":
             case "jpeg":
             case "png":
-                GlideApp
+                RequestOptions options2 = new RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.mipmap.png);
+                Glide
                         .with(mContext)
                         .load(item.getAbsolutePath())
-                        .placeholder(R.mipmap.png)
-                        .centerCrop()
+                        .apply(options2)
                         .into(imageView);
                 break;
             case "mp3":
