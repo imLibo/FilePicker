@@ -102,8 +102,10 @@ public class EssMimeTypeLoader extends CursorLoader {
                     essFileList.add(essFile);
                 }
             }
+            data.moveToFirst();
         }
-        return super.loadInBackground();
+
+        return data;
     }
 
 
