@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +33,14 @@ import com.ess.filepicker.util.UiUtils;
 import com.ess.filepicker.widget.MediaItemDecoration;
 import com.ess.filepicker.widget.ToolbarSpinner;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 
 /**
@@ -144,7 +149,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
         mBuketAdapter.swapCursor(cursor);
         cursor.moveToFirst();
         Album album = Album.valueOf(cursor);
-        mMediaCollection.load(album, mNeedCamera,mSelectedFileList);
+        mMediaCollection.load(album, mNeedCamera, mSelectedFileList);
     }
 
     @Override
@@ -156,7 +161,7 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mBuketAdapter.getCursor().moveToPosition(position);
         Album album = Album.valueOf(mBuketAdapter.getCursor());
-        mMediaCollection.load(album, mNeedCamera,mSelectedFileList);
+        mMediaCollection.load(album, mNeedCamera, mSelectedFileList);
     }
 
     @Override
@@ -184,15 +189,15 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
             return;
         }
         if (view.getId() == R.id.check_view) {
-            if(mSelectedFileList.size() >= SelectOptions.getInstance().maxCount && !item.isChecked()){
+            if (mSelectedFileList.size() >= SelectOptions.getInstance().maxCount && !item.isChecked()) {
                 mMediaAdapter.notifyItemChanged(position, "");
                 Snackbar.make(mRecyclerView, "您最多只能选择" + SelectOptions.getInstance().maxCount + "个。", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             boolean addSuccess = mSelectedFileList.add(mMediaAdapter.getItem(position));
-            if(addSuccess){
+            if (addSuccess) {
                 mMediaAdapter.getData().get(position).setChecked(true);
-            }else {
+            } else {
                 //已经有了就删掉
                 mSelectedFileList.remove(item);
                 mMediaAdapter.getData().get(position).setChecked(false);
@@ -216,11 +221,44 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
             if (mSelectedFileList.isEmpty()) {
                 return true;
             }
-            //不为空
-            Intent result = new Intent();
-            result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(this, mSelectedFileList));
-            setResult(RESULT_OK, result);
-            super.onBackPressed();
+            if (SelectOptions.getInstance().compressImage) {
+                //需要压缩
+                final ArrayList<String> imageList = EssFile.getFilePathList(EssFile.getEssFileList(this, mSelectedFileList));
+                final int[] successCount = {0};
+                //todo 当目标文件夹存在此文件时不覆盖
+                Luban.with(this)
+                        .load(imageList)// 传人要压缩的图片列表
+                        .ignoreBy(100) // 忽略不压缩图片的大小
+                        .setTargetDir(SelectOptions.getInstance().getTargetPath())// 设置压缩后文件存储位置
+                        .setCompressListener(new OnCompressListener() { //设置回调
+                            @Override
+                            public void onStart() {
+
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                successCount[0]++;
+                                if(successCount[0] == imageList.size()){
+                                    Intent result = new Intent();
+                                    result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(SelectPictureActivity.this, mSelectedFileList));
+                                    setResult(RESULT_OK, result);
+                                    onBackPressed();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.i("TAG", e.toString());
+                            }
+                        })
+                        .launch();    //启动压缩
+            }else {
+                Intent result = new Intent();
+                result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(SelectPictureActivity.this, mSelectedFileList));
+                setResult(RESULT_OK, result);
+                onBackPressed();
+            }
         }
         return true;
     }

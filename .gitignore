@@ -7,3 +7,5 @@
 /captures
 .externalNativeBuild
 bintrayKey
+gradle.properties
+*.iml

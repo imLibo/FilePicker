@@ -1,33 +1,33 @@
 package com.ess.essfilepicker;
 
+
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import com.ess.filepicker.FilePicker;
-import com.ess.filepicker.SelectCreator;
-import com.ess.filepicker.SelectOptions;
-import com.ess.filepicker.activity.SelectFileByBrowserActivity;
-import com.ess.filepicker.activity.SelectFileByScanActivity;
-import com.ess.filepicker.activity.SelectPictureActivity;
 import com.ess.filepicker.model.EssFile;
 import com.ess.filepicker.util.Const;
-import com.ess.filepicker.util.DialogUtil;
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.Permission;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+import static android.app.Activity.RESULT_OK;
+
+/**
+ * TestFragment
+ */
+public class TestFragment extends Fragment {
 
     @BindView(R.id.textView_filename)
     TextView textView;
@@ -66,33 +66,34 @@ public class MainActivity extends AppCompatActivity {
                 .start();
     }
 
-    @OnClick(R.id.button_fragment)
-    public void onFragment(View view){
-        startActivity(new Intent(this,FragmentTestActivity.class));
+    public TestFragment() {
     }
 
+    public static TestFragment newInstance() {
+        return new TestFragment();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        AndPermission
-                .with(this)
-                .permission(Permission.READ_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE)
-                .onDenied(new Action() {
-                    @Override
-                    public void onAction(List<String> permissions) {
-                        //拒绝权限
-                        DialogUtil.showPermissionDialog(MainActivity.this,Permission.transformText(MainActivity.this, permissions).get(0));
-                    }
-                })
-                .start();
-
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_test, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        ButterKnife.bind(this,view);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
             return;

@@ -2,11 +2,11 @@ package com.ess.filepicker.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,18 +25,16 @@ import com.ess.filepicker.SelectOptions;
 import com.ess.filepicker.adapter.BreadAdapter;
 import com.ess.filepicker.adapter.FileListAdapter;
 import com.ess.filepicker.adapter.SelectSdcardAdapter;
-import com.ess.filepicker.task.EssFileCountTask;
-import com.ess.filepicker.model.EssFileCountCallBack;
-import com.ess.filepicker.model.EssFileListCallBack;
-import com.ess.filepicker.task.EssFileListTask;
 import com.ess.filepicker.model.BreadModel;
 import com.ess.filepicker.model.EssFile;
-import com.ess.filepicker.model.FileEvent;
+import com.ess.filepicker.model.EssFileCountCallBack;
+import com.ess.filepicker.model.EssFileListCallBack;
+import com.ess.filepicker.task.EssFileCountTask;
+import com.ess.filepicker.task.EssFileListTask;
 import com.ess.filepicker.util.Const;
 import com.ess.filepicker.util.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +45,7 @@ import java.util.List;
  */
 public class SelectFileByBrowserActivity extends AppCompatActivity
         implements BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener,
-        View.OnClickListener, EssFileListCallBack, EssFileCountCallBack {
+        View.OnClickListener, EssFileListCallBack, EssFileCountCallBack, FileListAdapter.onLoadFileCountListener {
 
     /*todo 是否可预览文件，默认可预览*/
     private boolean mCanPreview = true;
@@ -121,6 +119,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new FileListAdapter(new ArrayList<EssFile>());
+        mAdapter.setLoadFileCountListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.bindToRecyclerView(mRecyclerView);
         mAdapter.setOnItemClickListener(this);
@@ -220,16 +219,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         getWindow().setAttributes(lp);
     }
 
-    /**
-     * 查找子文件/子文件夹个数
-     *
-     * @param event EventBus事件
-     */
-    @Subscribe
-    public void findChildCounts(FileEvent event) {
-        essFileCountTask = new EssFileCountTask(event.getPosition(), mAdapter.getData().get(event.getPosition()).getAbsolutePath(), SelectOptions.getInstance().getFileTypes(), this);
-        essFileCountTask.execute();
-    }
 
     @Override
     public void onFindChildFileAndFolderCount(int position, String childFileCount, String childFolderCount) {
@@ -404,4 +393,9 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onLoadFileCount(int position) {
+        essFileCountTask = new EssFileCountTask(position, mAdapter.getData().get(position).getAbsolutePath(), SelectOptions.getInstance().getFileTypes(), this);
+        essFileCountTask.execute();
+    }
 }

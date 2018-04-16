@@ -186,6 +186,14 @@ public class EssFile implements Parcelable {
         return essFileArrayList;
     }
 
+    public static ArrayList<String> getFilePathList(ArrayList<EssFile> essFileArrayList){
+        ArrayList<String> resultList = new ArrayList<>();
+        for (EssFile essFile:essFileArrayList) {
+            resultList.add(essFile.getAbsolutePath());
+        }
+        return resultList;
+    }
+
 
     @Override
     public String toString() {

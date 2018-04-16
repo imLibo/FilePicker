@@ -9,12 +9,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ess.filepicker.model.EssFile;
-import com.ess.filepicker.model.FileEvent;
 import com.ess.filepicker.util.FileSizeUtil;
 import com.ess.filepicker.util.FileUtils;
 import com.ess.filepicker.R;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -24,6 +21,21 @@ import java.util.List;
  */
 
 public class FileListAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
+
+    private onLoadFileCountListener loadFileCountListener;
+
+    public interface onLoadFileCountListener{
+        void onLoadFileCount(int posistion);
+    }
+
+    public onLoadFileCountListener getLoadFileCountListener() {
+        return loadFileCountListener;
+    }
+
+    public void setLoadFileCountListener(onLoadFileCountListener loadFileCountListener) {
+        this.loadFileCountListener = loadFileCountListener;
+    }
+
     public FileListAdapter(@Nullable List<EssFile> data) {
         super(R.layout.item_file_list, data);
     }
@@ -35,7 +47,9 @@ public class FileListAdapter extends BaseQuickAdapter<EssFile, BaseViewHolder> {
             helper.setVisible(R.id.iv_item_file_select_right, true);
             if(item.getChildFolderCount().equals("加载中")){
                 //查找数量
-                EventBus.getDefault().post(new FileEvent(helper.getAdapterPosition()));
+                if(loadFileCountListener!=null){
+                    loadFileCountListener.onLoadFileCount(helper.getAdapterPosition());
+                }
             }
             textView.setText(String.format(mContext.getString(R.string.folder_desc), item.getChildFileCount(),item.getChildFolderCount()));
         } else {

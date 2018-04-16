@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp"
+    android:background="#fff"
     android:orientation="vertical"
     >
 
@@ -29,12 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="选择照片"
-        />
-    <Button
-        android:id="@+id/button_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment"
         />
 
     <TextView
