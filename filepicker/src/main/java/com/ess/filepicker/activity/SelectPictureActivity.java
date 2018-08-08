@@ -1,10 +1,13 @@
 package com.ess.filepicker.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +33,13 @@ import com.ess.filepicker.loader.EssMediaCollection;
 import com.ess.filepicker.model.Album;
 import com.ess.filepicker.model.EssFile;
 import com.ess.filepicker.util.Const;
+import com.ess.filepicker.util.FileUtils;
 import com.ess.filepicker.util.UiUtils;
 import com.ess.filepicker.widget.MediaItemDecoration;
 import com.ess.filepicker.widget.ToolbarSpinner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -221,43 +227,56 @@ public class SelectPictureActivity extends AppCompatActivity implements EssAlbum
             if (mSelectedFileList.isEmpty()) {
                 return true;
             }
+            //需要压缩
             if (SelectOptions.getInstance().compressImage) {
-                //需要压缩
                 final ArrayList<String> imageList = EssFile.getFilePathList(EssFile.getEssFileList(this, mSelectedFileList));
-                final int[] successCount = {0};
-                //todo 当目标文件夹存在此文件时不覆盖
-                Luban.with(this)
-                        .load(imageList)// 传人要压缩的图片列表
-                        .ignoreBy(100) // 忽略不压缩图片的大小
-                        .setTargetDir(SelectOptions.getInstance().getTargetPath())// 设置压缩后文件存储位置
-                        .setCompressListener(new OnCompressListener() { //设置回调
-                            @Override
-                            public void onStart() {
-
+                AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final List<File> fileList = Luban.with(SelectPictureActivity.this).setTargetDir(SelectOptions.getInstance().getTargetPath()).load(imageList).get();
+                            for (File file : fileList) {
+                                String showImageName = FileUtils.getCurrentImageName();
+                                //拷贝至可供系统图库选择的展示文件夹
+                                FileUtils.saveImageToGallaly(SelectPictureActivity.this,file.getAbsolutePath(),showImageName);
                             }
-
-                            @Override
-                            public void onSuccess(File file) {
-                                successCount[0]++;
-                                if(successCount[0] == imageList.size()){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
                                     Intent result = new Intent();
-                                    result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(SelectPictureActivity.this, mSelectedFileList));
+                                    result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(fileList));
                                     setResult(RESULT_OK, result);
                                     onBackPressed();
                                 }
-                            }
-
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (EssFile file : mSelectedFileList) {
+                            //拷贝至目标文件夹（隐藏）
+                            FileUtils.copy(file.getAbsolutePath(), SelectOptions.getInstance().getTargetPath() + FileUtils.getCurrentImageName());
+                            //拷贝至可供系统图库选择的展示文件夹
+                            String showImageName = FileUtils.getCurrentImageName();
+                            //拷贝至可供系统图库选择的展示文件夹
+                            FileUtils.saveImageToGallaly(SelectPictureActivity.this,file.getAbsolutePath(),showImageName);
+                        }
+                        runOnUiThread(new Runnable() {
                             @Override
-                            public void onError(Throwable e) {
-                                Log.i("TAG", e.toString());
+                            public void run() {
+                                Intent result = new Intent();
+                                result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(SelectPictureActivity.this, mSelectedFileList));
+                                setResult(RESULT_OK, result);
+                                onBackPressed();
                             }
-                        })
-                        .launch();    //启动压缩
-            }else {
-                Intent result = new Intent();
-                result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, EssFile.getEssFileList(SelectPictureActivity.this, mSelectedFileList));
-                setResult(RESULT_OK, result);
-                onBackPressed();
+                        });
+                    }
+                });
             }
         }
         return true;

@@ -78,8 +78,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file);
-        EventBus.getDefault().register(this);
-
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {
             mCurFolder = mSdCardList.get(0) + File.separator;
@@ -301,7 +299,6 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         if(essFileListTask!=null){
             essFileListTask.cancel(true);
         }

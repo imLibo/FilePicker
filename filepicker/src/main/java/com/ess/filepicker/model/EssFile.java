@@ -167,8 +167,8 @@ public class EssFile implements Parcelable {
         return mFilePath;
     }
 
-    public static List<EssFile> getEssFileList(List<File> files) {
-        List<EssFile> essFileList = new ArrayList<>();
+    public static ArrayList<EssFile> getEssFileList(List<File> files) {
+        ArrayList<EssFile> essFileList = new ArrayList<>();
         for (File file :
                 files) {
             essFileList.add(new EssFile(file));

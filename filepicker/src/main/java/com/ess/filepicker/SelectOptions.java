@@ -8,6 +8,7 @@ import com.ess.filepicker.util.FileUtils;
 import com.ess.filepicker.util.MimeType;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -21,7 +22,10 @@ public class SelectOptions {
     public static final String CHOOSE_TYPE_SCAN = "choose_type_scan";
     public static final String CHOOSE_TYPE_MEDIA = "choose_type_media";
 
+    //默认存放隐藏目录的路径
     public static final String defaultTargetPath = Environment.getExternalStorageDirectory() + "/essPictures";
+    //默认存放用于图库选择的路径
+    public static final String defaultShowPath = Environment.getExternalStorageDirectory() + "/FilePickerPics/";
 
     public String[] mFileTypes;
     public String mSortType;
@@ -35,6 +39,10 @@ public class SelectOptions {
     public boolean compressImage = true;
     public String targetPath = defaultTargetPath;
     public int themeId = R.style.FilePicker_Elec;
+
+    public SelectOptions() {
+        getTargetPath();
+    }
 
     public String[] getFileTypes() {
         if (mFileTypes == null || mFileTypes.length == 0) {
@@ -52,11 +60,22 @@ public class SelectOptions {
 
     public String getTargetPath() {
         if (!new File(targetPath).exists()) {
-            File file = new File(defaultTargetPath);
-            if (!file.exists()) {
-                file.mkdirs();
+            try {
+                File file = new File(defaultTargetPath);
+                File fileNoMedia = new File(defaultTargetPath + "/.nomedia");
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                if(!fileNoMedia.exists()){
+                    fileNoMedia.createNewFile();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return defaultTargetPath;
+        }
+        if(!new File(defaultShowPath).exists()){
+            new File(defaultShowPath).mkdir();
         }
         return targetPath;
     }

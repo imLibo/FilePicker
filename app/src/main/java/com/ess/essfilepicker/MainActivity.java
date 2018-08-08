@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         FilePicker
                 .from(this)
                 .chooseMedia()
-                .enabledCapture(true)
+                .enabledCapture(false)
+                .setCompressImage(true)
                 .setTheme(R.style.FilePicker_Dracula)
                 .requestCode(REQUEST_CODE_CHOOSE)
                 .start();
@@ -79,12 +80,13 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         AndPermission
                 .with(this)
+                .runtime()
                 .permission(Permission.READ_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE)
-                .onDenied(new Action() {
+                .onDenied(new Action<List<String>>() {
                     @Override
-                    public void onAction(List<String> permissions) {
+                    public void onAction(List<String> data) {
                         //拒绝权限
-                        DialogUtil.showPermissionDialog(MainActivity.this,Permission.transformText(MainActivity.this, permissions).get(0));
+                        DialogUtil.showPermissionDialog(MainActivity.this,Permission.transformText(MainActivity.this, data).get(0));
                     }
                 })
                 .start();

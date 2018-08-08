@@ -1,12 +1,15 @@
 package com.ess.filepicker.util;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.provider.MediaStore;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import com.ess.filepicker.SelectOptions;
 import com.ess.filepicker.model.BreadModel;
 
 import java.io.BufferedInputStream;
@@ -26,12 +29,16 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -937,6 +944,34 @@ public final class FileUtils {
             }
         }
         return resultList;
+    }
+
+    /***
+     * 获取时间戳格式的照片名称
+     * @return
+     */
+    public static String getCurrentImageName() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.CHINA);
+        String uuidStr = UUID.randomUUID().toString().replace("-", "");
+        if (uuidStr.length() > 3) {
+            uuidStr = uuidStr.substring(0, 3);
+        }
+
+        return String.valueOf(formatter.format(new Date()) + uuidStr + ".jpg");
+    }
+
+    /**
+     * 保存图片到图库
+     */
+    public static void saveImageToGallaly(Context context,String srcPath, String targetImageName){
+        FileUtils.copy(srcPath, SelectOptions.defaultShowPath + targetImageName);
+        if (!TextUtils.isEmpty(targetImageName)) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, targetImageName);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.Images.Media.DATA, SelectOptions.defaultShowPath + targetImageName);
+            context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        }
     }
 
 }
