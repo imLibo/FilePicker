@@ -55,6 +55,18 @@ public class MainActivity extends AppCompatActivity {
                 .start();
     }
 
+
+    @OnClick(R.id.button_single_pick)
+    public void onSinglePick(View view) {
+        FilePicker
+                .from(this)
+                .chooseForBrowser()
+                .isSingle()
+                .setFileTypes("pdf")
+                .requestCode(REQUEST_CODE_CHOOSE)
+                .start();
+    }
+
     @OnClick(R.id.button_select_pictures)
     public void onSelectPictures(View view){
         FilePicker
