@@ -34,8 +34,6 @@ import com.ess.filepicker.task.EssFileListTask;
 import com.ess.filepicker.util.Const;
 import com.ess.filepicker.util.FileUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +76,8 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_file);
-        EventBus.getDefault().register(this);
+        // TODO: 2019/3/12 暂时移除
+//        EventBus.getDefault().register(this);
 
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {
@@ -239,6 +238,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             } else {
                 //选中某文件后，判断是否单选
                 if (SelectOptions.getInstance().isSingle) {
+                    mSelectedFileList.add(item);
                     Intent result = new Intent();
                     result.putParcelableArrayListExtra(Const.EXTRA_RESULT_SELECTION, mSelectedFileList);
                     setResult(RESULT_OK, result);
@@ -283,7 +283,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             super.onBackPressed();
             return;
         }
-        executeListTask(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
+        executeListTask(mSelectedFileList, new File(mCurFolder).getParentFile().getAbsolutePath() + File.separator, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
     }
 
     @Override
@@ -294,14 +294,15 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
             if (mCurFolder.equals(queryPath)) {
                 return;
             }
-            executeListTask(mSelectedFileList, queryPath, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
+            executeListTask(mSelectedFileList, queryPath, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        // TODO: 2019/3/12 暂时移除
+//        EventBus.getDefault().unregister(this);
         if(essFileListTask!=null){
             essFileListTask.cancel(true);
         }
@@ -361,7 +362,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                             }
                             //恢复排序
                             mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
-                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
+                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
                         }
                     })
                     .setPositiveButton("升序", new DialogInterface.OnClickListener() {
@@ -383,7 +384,7 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
                             }
                             //恢复排序
                             mBreadAdapter.getData().get(mBreadAdapter.getData().size() - 1).setPrePosition(0);
-                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(),SelectOptions.getInstance().getSortType());
+                            executeListTask(mSelectedFileList, mCurFolder, SelectOptions.getInstance().getFileTypes(), SelectOptions.getInstance().getSortType());
                         }
                     })
                     .setTitle("请选择")

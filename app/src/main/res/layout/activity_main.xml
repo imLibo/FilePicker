@@ -25,6 +25,13 @@
         />
 
     <Button
+        android:id="@+id/button_single_pick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="单选特定文件"
+        />
+
+    <Button
         android:id="@+id/button_select_pictures"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
