@@ -19,12 +19,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ScrollView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -458,7 +459,7 @@ public class ConvertUtils {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawBitmap(cacheBitmap, 0, 0, null);
-        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.save();
         canvas.restore();
         if (!bitmap.isRecycled()) {
             LogUtils.verbose("recycle bitmap: " + bitmap.toString());
@@ -565,7 +566,7 @@ public class ConvertUtils {
         return toDarkenColor(color, 0.8f);
     }
 
-    public static int toDarkenColor(@ColorInt int color, @FloatRange(from = 0f, to = 1f) float value) {
+    public static int toDarkenColor(@ColorInt int color, float value) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         hsv[2] *= value;//HSV指Hue、Saturation、Value，即色调、饱和度和亮度，此处表示修改亮度

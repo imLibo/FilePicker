@@ -2,11 +2,11 @@ package com.ess.filepicker.activity;
 
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ess.filepicker.BaseFileFragment;
@@ -18,6 +18,7 @@ import com.ess.filepicker.model.EssFile;
 import com.ess.filepicker.model.FileScanActEvent;
 import com.ess.filepicker.model.FileScanFragEvent;
 import com.ess.filepicker.model.FileScanSortChangedEvent;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

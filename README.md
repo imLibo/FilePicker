@@ -1,6 +1,6 @@
 ### 介绍
 
-# 由于暂时没有更多的精力在此项目上，现将此项目转让给其他人，谁来认领一下，一起把这个库搞下去，加我微信bo_744172447，谢谢！
+# 将原项目升级为AndroidX版本，并适配Andeoid Q
 
 ---
 
@@ -28,7 +28,7 @@
 
 
 ```
-implementation 'cn.imlibo:FilePicker:v0.0.5_alpha'
+implementation project(':filepicker')
 ```
 
 

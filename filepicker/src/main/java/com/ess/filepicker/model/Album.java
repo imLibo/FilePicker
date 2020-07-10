@@ -21,7 +21,8 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import com.ess.filepicker.loader.EssAlbumLoader;
 
@@ -46,7 +47,7 @@ public class Album implements Parcelable {
     private final String mDisplayName;
     private long mCount;
 
-    Album(String id, String coverPath, String albumName, long count) {
+    public Album(String id, String coverPath, String albumName, long count) {
         mId = id;
         mCoverPath = coverPath;
         mDisplayName = albumName;

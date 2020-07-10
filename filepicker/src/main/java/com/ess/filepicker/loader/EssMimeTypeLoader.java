@@ -4,8 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.content.CursorLoader;
 import android.webkit.MimeTypeMap;
+
+import androidx.loader.content.CursorLoader;
 
 import com.ess.filepicker.model.EssFile;
 import com.ess.filepicker.util.Const;

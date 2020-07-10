@@ -54,7 +54,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_item_file_list"
             android:checked="true"
             android:enabled="false"

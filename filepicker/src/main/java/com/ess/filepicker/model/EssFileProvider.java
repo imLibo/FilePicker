@@ -1,6 +1,7 @@
 package com.ess.filepicker.model;
 
-import android.support.v4.content.FileProvider;
+
+import androidx.core.content.FileProvider;
 
 /**
  * EssFileProvider

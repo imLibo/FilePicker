@@ -1,11 +1,12 @@
 package com.ess.essfilepicker;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ess.filepicker.FilePicker;
 import com.ess.filepicker.SelectCreator;
@@ -18,7 +19,7 @@ import com.ess.filepicker.util.Const;
 import com.ess.filepicker.util.DialogUtil;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,16 +90,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        AndPermission
-                .with(this)
-                .permission(Permission.READ_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE)
-                .onDenied(new Action() {
+        AndPermission.with(this)
+                .runtime()
+                .permission(
+                        Permission.CAMERA,
+                        Permission.READ_EXTERNAL_STORAGE,
+                        Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(new Action() {
                     @Override
-                    public void onAction(List<String> permissions) {
-                        //拒绝权限
-                        DialogUtil.showPermissionDialog(MainActivity.this,Permission.transformText(MainActivity.this, permissions).get(0));
+                    public void onAction(Object data) {
+
                     }
-                })
+                }).onDenied(new Action<List<String>>() {
+            @Override
+            public void onAction(@NonNull List<String> permissions) {
+                if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)) {
+                }
+
+
+            }
+        })
                 .start();
 
     }

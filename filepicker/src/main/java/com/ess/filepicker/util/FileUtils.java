@@ -3,9 +3,10 @@ package com.ess.filepicker.util;
 import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
-import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+
+import androidx.annotation.IntDef;
 
 import com.ess.filepicker.model.BreadModel;
 

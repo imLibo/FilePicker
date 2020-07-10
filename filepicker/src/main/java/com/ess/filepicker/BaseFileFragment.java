@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.lang.reflect.Field;
 
@@ -17,7 +19,7 @@ import java.lang.reflect.Field;
  * Created by 李波 on 2018/2/23.
  */
 
-public abstract class BaseFileFragment extends Fragment{
+public abstract class BaseFileFragment extends Fragment {
 
     protected Activity mActivity = null;
     protected Bundle bundle = null;
@@ -138,10 +140,8 @@ public abstract class BaseFileFragment extends Fragment{
         try {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
+            //childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
