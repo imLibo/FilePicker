@@ -10,7 +10,6 @@ package com.ess.essfilepicker;
 
 import android.app.Application;
 
-import com.squareup.leakcanary.LeakCanary;
 
 /**
  * LApplication
@@ -22,6 +21,5 @@ public class LApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
     }
 }

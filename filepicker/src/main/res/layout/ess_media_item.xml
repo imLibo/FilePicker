@@ -30,7 +30,7 @@
             android:scaleType="centerCrop"
             />
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/check_view"
             android:theme="@style/checkbox"
             android:layout_width="wrap_content"

@@ -1,7 +1,8 @@
 package com.ess.filepicker.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ess.filepicker.R;
 import com.ess.filepicker.model.EssFile;

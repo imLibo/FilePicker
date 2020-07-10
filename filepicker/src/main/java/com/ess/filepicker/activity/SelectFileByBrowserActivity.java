@@ -2,14 +2,9 @@ package com.ess.filepicker.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +13,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.ess.filepicker.R;
@@ -33,6 +34,7 @@ import com.ess.filepicker.task.EssFileCountTask;
 import com.ess.filepicker.task.EssFileListTask;
 import com.ess.filepicker.util.Const;
 import com.ess.filepicker.util.FileUtils;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,7 +80,9 @@ public class SelectFileByBrowserActivity extends AppCompatActivity
         setContentView(R.layout.activity_select_file);
         // TODO: 2019/3/12 暂时移除
 //        EventBus.getDefault().register(this);
-
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+           // mCurFolder=getExternalFilesDir(Environment.getExternalStorageDirectory().getAbsolutePath())+ File.separator;
+        }
         mSdCardList = FileUtils.getAllSdPaths(this);
         if (!mSdCardList.isEmpty()) {
             mCurFolder = mSdCardList.get(0) + File.separator;

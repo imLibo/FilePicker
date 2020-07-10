@@ -1,10 +1,11 @@
 package com.ess.filepicker.adapter;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
